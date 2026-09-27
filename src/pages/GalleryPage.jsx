@@ -335,6 +335,20 @@ export default function GalleryPage({ onOpenAdmin }) {
 
   const currentSlide = categorySliderItems[currentSlideIndex] || null;
 
+  // Determine if current slide is mobile portrait orientation
+  const isCurrentSlideMobile = useMemo(() => {
+    if (!currentSlide) return false;
+    const pos = (currentSlide.position || currentSlide.placement || '').toLowerCase();
+    const view = (currentSlide.view || '').toLowerCase();
+    const title = (currentSlide.title || '').toLowerCase();
+    return (
+      pos.includes('mobile') ||
+      pos === 'hero_banner_mobile' ||
+      view === 'mobile' ||
+      title.includes('mobile')
+    );
+  }, [currentSlide]);
+
   // Animation variants for smooth sliding
   const slideVariants = {
     enter: (direction) => ({
@@ -520,8 +534,14 @@ export default function GalleryPage({ onOpenAdmin }) {
               onTouchEnd={handleTouchEnd}
               className="relative w-full rounded-[28px] sm:rounded-[36px] overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] bg-[#030712] border border-slate-800 group select-none"
             >
-              {/* Dynamic Slider Viewport: Expansive Cinematic Height */}
-              <div className="relative w-full h-[400px] sm:h-[500px] md:h-[600px] lg:h-[680px] overflow-hidden">
+              {/* Dynamic Slider Viewport: Adapts height according to image orientation and screen */}
+              <div
+                className={`relative w-full overflow-hidden transition-[height] duration-300 ${
+                  isCurrentSlideMobile
+                    ? 'h-[520px] xs:h-[580px] sm:h-[620px] md:h-[640px] lg:h-[700px]'
+                    : 'h-[360px] xs:h-[420px] sm:h-[500px] md:h-[600px] lg:h-[680px]'
+                }`}
+              >
                 <AnimatePresence initial={false} custom={slideDirection}>
                   {currentSlide && (
                     <motion.div
@@ -533,39 +553,39 @@ export default function GalleryPage({ onOpenAdmin }) {
                       exit="exit"
                       className="absolute inset-0 w-full h-full"
                     >
-                      {/* Ambient Blurred Background (Ensures zero black empty space on odd aspect ratios) */}
+                      {/* Ambient Blurred Background (Ensures edge glow depth) */}
                       <img
                         src={currentSlide.imageUrl}
                         alt=""
                         aria-hidden="true"
-                        className="absolute inset-0 w-full h-full object-cover blur-3xl opacity-35 scale-110"
+                        className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-105 pointer-events-none"
                       />
 
-                      {/* Main Crisp High-Definition Image */}
+                      {/* Main Crisp High-Definition Image - Full width & height coverage */}
                       <img
                         src={currentSlide.imageUrl}
                         alt={currentSlide.title || 'Campus Image'}
-                        className="relative z-10 w-full h-full object-contain md:object-cover mx-auto"
+                        className="relative z-10 w-full h-full object-cover object-center"
                       />
 
                       {/* Top Gradient Shadow for Top Badges */}
-                      <div className="absolute top-0 left-0 right-0 h-36 bg-gradient-to-b from-black/85 via-black/40 to-transparent z-10 pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-24 sm:h-36 bg-gradient-to-b from-black/85 via-black/40 to-transparent z-10 pointer-events-none" />
 
-                      {/* Bottom Deep Gradient Scrim for Text Overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 pt-36 pb-8 px-6 sm:px-12 bg-gradient-to-t from-black via-black/80 to-transparent z-10 flex flex-col justify-end">
-                        <div className="max-w-5xl space-y-2.5">
+                      {/* Bottom Gradient Scrim for Text Overlay - non-intrusive so image shines */}
+                      <div className="absolute bottom-0 left-0 right-0 pt-20 sm:pt-36 pb-4 sm:pb-8 px-4 sm:px-10 bg-gradient-to-t from-black/95 via-black/60 to-transparent z-10 flex flex-col justify-end pointer-events-none">
+                        <div className="max-w-5xl space-y-1.5 sm:space-y-2.5 pointer-events-auto">
                           {/* Tags row */}
-                          <div className="flex flex-wrap items-center gap-2">
+                          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                             {/* Category Tag */}
-                            <span className="bg-[#a9343f] text-white text-[11px] font-bold uppercase tracking-wider px-3.5 py-1 rounded-[9999px] shadow-sm flex items-center gap-1.5">
-                              <span className="material-symbols-outlined text-[14px]">folder_special</span>
+                            <span className="bg-[#a9343f] text-white text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-2.5 sm:px-3.5 py-0.5 sm:py-1 rounded-[9999px] shadow-sm flex items-center gap-1">
+                              <span className="material-symbols-outlined text-[12px] sm:text-[14px]">folder_special</span>
                               {currentSlide.category || 'Campus'}
                             </span>
 
                             {/* Position / Subcategory Tag */}
                             {currentSlide.position && (
                               <span
-                                className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-[9999px] shadow-sm ${
+                                className={`text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-[9999px] shadow-sm ${
                                   getPositionBadge(currentSlide.position, currentSlide.view).color
                                 }`}
                               >
@@ -573,30 +593,22 @@ export default function GalleryPage({ onOpenAdmin }) {
                               </span>
                             )}
 
-                            {/* Subcategory View Tag */}
-                            <span className="bg-white/15 backdrop-blur-md text-slate-100 text-[10px] font-bold px-3 py-1 rounded-[9999px] border border-white/20 flex items-center gap-1">
-                              <span className="material-symbols-outlined text-[13px]">
-                                {currentSlide.view === 'mobile' ? 'smartphone' : 'desktop_windows'}
-                              </span>
-                              <span>{currentSlide.view === 'mobile' ? 'Mobile View' : 'Standard View'}</span>
-                            </span>
-
                             {/* Academic Year */}
                             {currentSlide.academicYear && (
-                              <span className="bg-black/50 text-[#ffdea0] text-[10px] font-bold px-3 py-1 rounded-[9999px] border border-white/10">
+                              <span className="bg-black/50 text-[#ffdea0] text-[9px] sm:text-[10px] font-bold px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-[9999px] border border-white/10">
                                 Session {currentSlide.academicYear}
                               </span>
                             )}
                           </div>
 
                           {/* Slide Title */}
-                          <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-white tracking-tight drop-shadow-lg leading-tight">
+                          <h1 className="text-base xs:text-lg sm:text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-white tracking-tight drop-shadow-md leading-tight line-clamp-2">
                             {currentSlide.title || 'Iqura Public School Campus View'}
                           </h1>
 
                           {/* Slide Description */}
                           {currentSlide.description && (
-                            <p className="text-xs sm:text-sm md:text-base text-slate-200 max-w-4xl leading-relaxed line-clamp-2 md:line-clamp-3 drop-shadow">
+                            <p className="text-[11px] sm:text-xs md:text-sm text-slate-200/90 max-w-4xl leading-relaxed line-clamp-1 sm:line-clamp-2 drop-shadow">
                               {currentSlide.description}
                             </p>
                           )}
@@ -607,32 +619,32 @@ export default function GalleryPage({ onOpenAdmin }) {
                 </AnimatePresence>
 
                 {/* Top Overlay Controls: Category Title, Counter & Action Buttons */}
-                <div className="absolute top-5 left-5 right-5 z-20 flex items-center justify-between pointer-events-auto">
+                <div className="absolute top-3 sm:top-5 left-3 sm:left-5 right-3 sm:right-5 z-20 flex items-center justify-between gap-2 pointer-events-auto">
                   {/* Left: Live Dynamic Slider Indicator */}
-                  <div className="flex items-center gap-2.5 bg-black/60 backdrop-blur-md px-4 py-2 rounded-[9999px] border border-white/20 text-white text-xs font-semibold shadow-xl">
-                    <span className="w-2.5 h-2.5 rounded-[9999px] bg-emerald-400 animate-pulse"></span>
-                    <span>Category:</span>
-                    <span className="font-bold text-[#ffdea0]">{selectedCategory}</span>
-                    <span className="text-white/40">•</span>
-                    <span className="text-slate-300 font-normal">
-                      {selectedSubcategory === 'all'
-                        ? 'All Photos'
-                        : availableSubcategories.find((s) => s.key === selectedSubcategory)?.label || 'Showcase'}
+                  <div className="flex items-center gap-1.5 sm:gap-2 bg-black/65 backdrop-blur-md px-2.5 sm:px-4 py-1 sm:py-2 rounded-[9999px] border border-white/20 text-white text-[11px] sm:text-xs font-semibold shadow-xl max-w-[55%] xs:max-w-[60%] truncate">
+                    <span className="w-2 h-2 rounded-[9999px] bg-emerald-400 animate-pulse shrink-0"></span>
+                    <span className="truncate">
+                      <span className="font-bold text-[#ffdea0]">{selectedCategory}</span>
+                      {selectedSubcategory !== 'all' && (
+                        <span className="text-slate-300 font-normal ml-1">
+                          • {availableSubcategories.find((s) => s.key === selectedSubcategory)?.label || 'Showcase'}
+                        </span>
+                      )}
                     </span>
                   </div>
 
                   {/* Right: Slide Counter + Fullscreen + Autoplay Toggle */}
-                  <div className="flex items-center gap-2.5">
-                    <span className="bg-black/60 backdrop-blur-md text-white font-mono text-xs font-bold px-4 py-2 rounded-[9999px] border border-white/20 shadow-xl">
+                  <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+                    <span className="bg-black/65 backdrop-blur-md text-white font-mono text-[10px] sm:text-xs font-bold px-2.5 sm:px-4 py-1 sm:py-2 rounded-[9999px] border border-white/20 shadow-xl">
                       {String(currentSlideIndex + 1).padStart(2, '0')} / {String(totalSlides).padStart(2, '0')}
                     </span>
 
                     <button
                       onClick={() => setIsAutoPlay(!isAutoPlay)}
                       title={isAutoPlay ? 'Pause Auto-slide' : 'Resume Auto-slide'}
-                      className="w-10 h-10 rounded-[9999px] bg-black/60 hover:bg-white hover:text-black text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 shadow-xl cursor-pointer"
+                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-[9999px] bg-black/65 hover:bg-white hover:text-black text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 shadow-xl cursor-pointer"
                     >
-                      <span className="material-symbols-outlined text-[19px]">
+                      <span className="material-symbols-outlined text-[16px] sm:text-[19px]">
                         {isAutoPlay ? 'pause' : 'play_arrow'}
                       </span>
                     </button>
@@ -641,9 +653,9 @@ export default function GalleryPage({ onOpenAdmin }) {
                       <button
                         onClick={() => setActiveModalImage(currentSlide)}
                         title="View Fullscreen"
-                        className="w-10 h-10 rounded-[9999px] bg-black/60 hover:bg-[#a9343f] text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 shadow-xl cursor-pointer"
+                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-[9999px] bg-black/65 hover:bg-[#a9343f] text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 shadow-xl cursor-pointer"
                       >
-                        <span className="material-symbols-outlined text-[19px]">fullscreen</span>
+                        <span className="material-symbols-outlined text-[16px] sm:text-[19px]">fullscreen</span>
                       </button>
                     )}
                   </div>
@@ -661,9 +673,9 @@ export default function GalleryPage({ onOpenAdmin }) {
                         handlePrevSlide();
                       }}
                       aria-label="Previous Slide"
-                      className="absolute left-3 sm:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 sm:w-16 sm:h-16 rounded-[9999px] bg-black/60 hover:bg-[#a9343f] text-white backdrop-blur-md border border-white/25 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer group"
+                      className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-14 sm:h-14 rounded-[9999px] bg-black/45 hover:bg-[#a9343f] text-white backdrop-blur-md border border-white/20 shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer group"
                     >
-                      <span className="material-symbols-outlined text-2xl sm:text-3xl group-hover:-translate-x-0.5 transition-transform duration-200">
+                      <span className="material-symbols-outlined text-lg sm:text-2xl group-hover:-translate-x-0.5 transition-transform duration-200">
                         arrow_back_ios_new
                       </span>
                     </button>
@@ -675,9 +687,9 @@ export default function GalleryPage({ onOpenAdmin }) {
                         handleNextSlide();
                       }}
                       aria-label="Next Slide"
-                      className="absolute right-3 sm:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 sm:w-16 sm:h-16 rounded-[9999px] bg-black/60 hover:bg-[#a9343f] text-white backdrop-blur-md border border-white/25 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer group"
+                      className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-14 sm:h-14 rounded-[9999px] bg-black/45 hover:bg-[#a9343f] text-white backdrop-blur-md border border-white/20 shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer group"
                     >
-                      <span className="material-symbols-outlined text-2xl sm:text-3xl group-hover:translate-x-0.5 transition-transform duration-200">
+                      <span className="material-symbols-outlined text-lg sm:text-2xl group-hover:translate-x-0.5 transition-transform duration-200">
                         arrow_forward_ios
                       </span>
                     </button>
