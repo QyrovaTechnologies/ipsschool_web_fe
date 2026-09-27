@@ -4,7 +4,7 @@ import PageBanner from '../components/common/PageBanner';
 
 export default function ResultsPage({ onOpenAdmin, onNavigate }) {
   const [selectedYear, setSelectedYear] = useState('2024-25');
-  const [selectedCategory, setSelectedCategory] = useState('class_12');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedStream, setSelectedStream] = useState('All');
   const [results, setResults] = useState([]);
   const [availableYears, setAvailableYears] = useState(['2024-25', '2023-24']);
@@ -17,10 +17,13 @@ export default function ResultsPage({ onOpenAdmin, onNavigate }) {
   const fetchResults = async () => {
     setLoading(true);
     try {
-      const query = {
-        year: selectedYear,
-        category: selectedCategory,
-      };
+      const query = {};
+      if (selectedYear && selectedYear !== 'All') {
+        query.year = selectedYear;
+      }
+      if (selectedCategory && selectedCategory !== 'all') {
+        query.category = selectedCategory;
+      }
       if (selectedStream !== 'All' && selectedCategory === 'class_12') {
         query.stream = selectedStream;
       }
@@ -37,9 +40,10 @@ export default function ResultsPage({ onOpenAdmin, onNavigate }) {
   };
 
   const categories = [
-    { id: 'class_12', label: 'Class XII (Senior Secondary)', badge: 'UP Board 10+2' },
-    { id: 'class_10', label: 'Class X (Secondary)', badge: 'Board Toppers' },
+    { id: 'all', label: 'All Results', badge: 'All Scholars' },
     { id: 'foundation', label: 'Foundation & Olympiads', badge: 'Junior Scholars' },
+    { id: 'class_10', label: 'Class X (Secondary)', badge: 'Board Toppers' },
+    { id: 'class_12', label: 'Class XII (Senior Secondary)', badge: 'UP Board 10+2' },
   ];
 
   return (

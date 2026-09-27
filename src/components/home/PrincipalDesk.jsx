@@ -13,91 +13,7 @@ export default function PrincipalDesk({ onNavigate }) {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  // High-profile leadership profiles with hero_staff subcategory
-  const defaultLeadership = [
-    {
-      _id: 'lead-1',
-      fullName: 'Sadrey Ayub Siddiqui',
-      role: 'Director / Chairman',
-      designation: 'Director & Managing Head',
-      department: 'Administration',
-      qualification: 'Institutional Governance & Leadership',
-      experienceYears: 22,
-      subjectsTaught: ['Institutional Governance', 'Strategic Vision'],
-      photoUrl:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=600',
-      subcategory: 'hero_staff',
-      message:
-        'Our commitment is to nurture intellect, instill moral courage, and equip every young mind with the wisdom and integrity to lead society with purpose.',
-      honor: '20+ Years Leadership'
-    },
-    {
-      _id: 'lead-2',
-      fullName: 'Er. Aftab Ahemed',
-      role: 'Principal',
-      designation: 'Principal & Head of Institution',
-      department: 'Administration',
-      qualification: 'B.Tech (Honours AKTU) • M.Tech (IIT Bhilai) • 2x GATE Qualified',
-      experienceYears: 12,
-      subjectsTaught: ['Advanced Mathematics', 'Physics & STEM Pedagogy'],
-      photoUrl:
-        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600',
-      subcategory: 'hero_staff',
-      message:
-        'True education does not merely teach a child to read; it teaches them how to think critically, how to care deeply, and how to stand firm in character and scientific rigor.',
-      honor: 'IIT Alumni • 2x GATE Qualified'
-    },
-    {
-      _id: 'lead-3',
-      fullName: 'Nure Saba',
-      role: 'Vice Principal',
-      designation: 'Vice Principal & Head of Science',
-      department: 'Secondary & Sr Secondary',
-      qualification: 'B.Sc., M.Sc., BTC, TET & CTET Qualified',
-      experienceYears: 10,
-      subjectsTaught: ['Biological Sciences', 'Environmental Pedagogy'],
-      photoUrl:
-        'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=600',
-      subcategory: 'hero_staff',
-      message:
-        'Academic excellence blossoms when scientific inquiry meets compassionate mentorship, disciplined dedication, and the continuous pursuit of knowledge.',
-      honor: 'TET & CTET Qualified'
-    },
-    {
-      _id: 'lead-4',
-      fullName: 'Deepak Chaudhary',
-      role: 'Academic Coordinator',
-      designation: 'Academic Coordinator',
-      department: 'Administration',
-      qualification: 'B.A., M.A., B.Ed.',
-      experienceYears: 8,
-      subjectsTaught: ['Curriculum Planning', 'Pedagogy & Faculty Development'],
-      photoUrl:
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=600',
-      subcategory: 'hero_staff',
-      message:
-        'A strong curriculum combined with structured discipline and innovative learning pathways allows every scholar to discover and realize their fullest potential.',
-      honor: 'Academic Planning Specialist'
-    },
-    {
-      _id: 'lead-5',
-      fullName: 'Shahista Bano',
-      role: 'Examination Head',
-      designation: 'Examination Controller & Senior Educator',
-      department: 'Administration',
-      qualification: 'B.A., M.A., BTC, TET Qualified',
-      experienceYears: 7,
-      subjectsTaught: ['Language Studies', 'Assessment & Evaluation Systems'],
-      photoUrl:
-        'https://images.unsplash.com/photo-1580894732444-8ecded7900cd?auto=format&fit=crop&q=80&w=600',
-      subcategory: 'hero_staff',
-      message:
-        'Fairness, rigorous evaluation standards, and transparent assessment frameworks build the foundation for lifelong academic integrity and personal confidence.',
-      honor: 'TET Qualified • Controller of Exams'
-    }
-  ];
-
-  // Fetch staff with subcategory === 'hero_staff' from backend
+  // Fetch leadership staff from backend (hero_staff or all staff)
   useEffect(() => {
     let isMounted = true;
 
@@ -107,29 +23,24 @@ export default function PrincipalDesk({ onNavigate }) {
         const res = await getStaff({ subcategory: 'hero_staff' });
         if (isMounted) {
           if (res?.data && res.data.length > 0) {
-            if (res.data.length === 1) {
-              const extra = defaultLeadership.find((d) => d.fullName !== res.data[0].fullName) || defaultLeadership[1];
-              setHeroStaffList([...res.data, extra]);
-            } else {
-              setHeroStaffList(res.data);
-            }
+            setHeroStaffList(res.data);
           } else {
             // Check if any leadership role exists in general staff
             const allStaffRes = await getStaff();
             const leaders = (allStaffRes?.data || []).filter((s) =>
               ['Director / Chairman', 'Director', 'Principal', 'Vice Principal', 'Academic Coordinator', 'Examination Head'].includes(s.role)
             );
-            if (leaders.length >= 2) {
+            if (leaders.length > 0) {
               setHeroStaffList(leaders);
             } else {
-              setHeroStaffList(defaultLeadership);
+              setHeroStaffList(allStaffRes?.data || []);
             }
           }
         }
       } catch (err) {
-        console.warn('Could not fetch hero_staff from backend, using defaults:', err);
+        console.warn('Could not fetch staff from backend:', err);
         if (isMounted) {
-          setHeroStaffList(defaultLeadership);
+          setHeroStaffList([]);
         }
       } finally {
         if (isMounted) setLoading(false);
@@ -142,7 +53,7 @@ export default function PrincipalDesk({ onNavigate }) {
     };
   }, []);
 
-  const activeStaffList = heroStaffList.length >= 2 ? heroStaffList : defaultLeadership;
+  const activeStaffList = heroStaffList;
 
   // Build slides so that each view contains at least 2 staff cards side by side
   const slides = [];
@@ -250,6 +161,10 @@ export default function PrincipalDesk({ onNavigate }) {
   };
 
   const currentPair = slides[currentSlide] || slides[0] || [];
+
+  if (!loading && activeStaffList.length === 0) {
+    return null;
+  }
 
   return (
     <section

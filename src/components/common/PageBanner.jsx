@@ -8,7 +8,7 @@ export default function PageBanner({
   badge = 'Iqura Public School',
   icon = 'school',
   placementKey = 'campus_facilities',
-  fallbackImage = 'https://lh3.googleusercontent.com/aida/AEtjO1UC0t7CrKr9FFDxgygFlDFot1VC4KjHOJ2jFriLizZr6yqkptMpoX2TEU-7jYoI9fXmui8eh0McXBIztpJFfqTZN2gHU5aJzZmQ7_nC4TTLsM2FM5HBeLfyY2ppJbHzzmIl0We2uosd9inOwM0lahGwA6ePS0xsbzMzD8slidRNYbM8qZqCqz_JHA3xT2xkXzSQgH4CSLk9Ebz5gNN47uGIFWAYFf0pPgfl2aFE7vDlLQ2rc9wKkgCD',
+  fallbackImage = '',
   breadcrumbs = []
 }) {
   const [bannerImage, setBannerImage] = useState(fallbackImage);
@@ -17,11 +17,17 @@ export default function PageBanner({
     let isMounted = true;
     const fetchImage = async () => {
       try {
-        if (!placementKey) return;
-        const res = await getGalleryByPosition(placementKey);
-        if (isMounted && res?.data && res.data.length > 0) {
-          // Use the first image uploaded for this position
-          setBannerImage(res.data[0].imageUrl);
+        if (placementKey) {
+          const res = await getGalleryByPosition(placementKey);
+          if (isMounted && res?.data && res.data.length > 0) {
+            setBannerImage(res.data[0].imageUrl);
+            return;
+          }
+        }
+        // Fallback to hero_banner or any uploaded gallery image from backend
+        const heroRes = await getGalleryByPosition('hero_banner');
+        if (isMounted && heroRes?.data && heroRes.data.length > 0) {
+          setBannerImage(heroRes.data[0].imageUrl);
         }
       } catch (err) {
         console.warn(`Could not load banner image for ${placementKey}:`, err);
@@ -39,7 +45,7 @@ export default function PageBanner({
       <div
         className="absolute inset-0 bg-cover bg-center transition-all duration-700 transform scale-105"
         style={{
-          backgroundImage: `url("${bannerImage}")`,
+          backgroundImage: bannerImage ? `url("${bannerImage}")` : undefined,
           filter: 'brightness(0.9) contrast(1.05)'
         }}
       >

@@ -18,49 +18,7 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  // Established Toppers (Fallback if no results uploaded in DB yet)
-  const defaultToppers = [
-    {
-      _id: 'top-1',
-      studentName: 'ARJUN SHARMA',
-      percentage: '98.6',
-      rankTitle: 'AIR 12 • STATE RANK #1',
-      tag: 'School Topper',
-      stream: 'Class XII — Science | Session 2024–25',
-      specialHonors: '12+ Scored 90%+',
-      photoUrl:
-        'https://lh3.googleusercontent.com/aida/AEtjO1WH-PPSLuKsTcZrXZs_Q7yNlNwvdZ-hRhwQ1cXOZyEeWSe1VUQeRWtOJ4OIWVEyk37_e9hjSHRPzOp9bjNifoMfk-PcW7S_jzvO2VoymcS-4Yv-f7qYDYQZWoObPh1uB7Sd4Du2TszWiGFP0XHdxYbsmhYwR93lK9guAd3Ld7LISh4yl3wO0gl08Au22ATYorjQY-gHogHk39HmiOJmvTKcgr4AqMtOS1xjQ1-ri_llX56Jtw8kObCq_Q',
-      category: 'class_12'
-    },
-    {
-      _id: 'top-2',
-      studentName: 'ANANYA MISHRA',
-      percentage: '97.8',
-      rankTitle: 'AIR 28 • STATE RANK #3',
-      tag: 'Commerce Star',
-      stream: 'Class XII — Commerce | Session 2024–25',
-      specialHonors: '100/100 in Accountancy',
-      photoUrl:
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuA2VHg_qSbVqobxs4WvbZ9f0jUfAJGe-S7s51dDq5SBjJnIcXpCZiK5usMNk7ebgimpzs-vB7hUrzHuoDt5k8VzXBg66xFQpSHMzbseqOhZTeCX2mUOw2qBpfXPpkbhfjUTUit4CqJv0Jo8FEKk1WXHq7V_ofsHPOhXbfDNfqZAuKnRnRELCRERlgkxVfjwjammlth0qCbeIj9D8eV5RpVLLCht3qonor5f9n866rjTFnOHMEssFvU',
-      category: 'class_12'
-    }
-  ];
-
-  const [toppersList, setToppersList] = useState(defaultToppers);
-
-  // Fallback high-resolution banners if database has no hero_banner images yet
-  const defaultBanners = [
-    {
-      _id: 'default-1',
-      title: 'Iqura Public School Main Campus & Grounds',
-      category: 'Campus & Facilities',
-      imageUrl:
-        'https://lh3.googleusercontent.com/aida/AEtjO1UC0t7CrKr9FFDxgygFlDFot1VC4KjHOJ2jFriLizZr6yqkptMpoX2TEU-7jYoI9fXmui8eh0McXBIztpJFfqTZN2gHU5aJzZmQ7_nC4TTLsM2FM5HBeLfyY2ppJbHzzmIl0We2uosd9inOwM0lahGwA6ePS0xsbzMzD8slidRNYbM8qZqCqz_JHA3xT2xkXzSQgH4CSLk9Ebz5gNN47uGIFWAYFf0pPgfl2aFE7vDlLQ2rc9wKkgCD',
-      academicYear: '2024-25',
-      view: 'all',
-      position: 'hero_banner'
-    }
-  ];
+  const [toppersList, setToppersList] = useState([]);
 
   // Screen resize listener to detect mobile vs desktop viewport
   useEffect(() => {
@@ -71,15 +29,16 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Fetch all images uploaded with position === 'hero_banner' or 'hero_banner_mobile'
+  // Fetch all images uploaded with position === 'hero_banner' or 'hero_banner_mobile' from backend
   useEffect(() => {
     let isMounted = true;
 
     const loadHeroData = async () => {
       try {
-        const [generalRes, mobileRes] = await Promise.all([
+        const [generalRes, mobileRes, allRes] = await Promise.all([
           getGalleryByPosition('hero_banner').catch(() => ({ data: [] })),
-          getGalleryByPosition('hero_banner_mobile').catch(() => ({ data: [] }))
+          getGalleryByPosition('hero_banner_mobile').catch(() => ({ data: [] })),
+          getGallery().catch(() => ({ data: [] }))
         ]);
 
         if (isMounted) {
@@ -87,26 +46,29 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
             ...(generalRes?.data || []),
             ...(mobileRes?.data || [])
           ];
-
-          if (combined.length > 0) {
-            setAllBanners(combined);
-          } else {
-            setAllBanners(defaultBanners);
-          }
+          const finalBanners = combined.length > 0 ? combined : (allRes?.data || []);
+          setAllBanners(finalBanners);
         }
       } catch (err) {
-        console.warn('Could not fetch hero banner images from backend, using defaults:', err);
-        if (isMounted) setAllBanners(defaultBanners);
+        console.warn('Could not fetch hero banner images from backend:', err);
       }
 
-      // Check if real student results are uploaded in the backend
+      // Fetch real student results from backend (featured first, then general)
       try {
         const resultsRes = await getResults({ featured: 'true' });
         if (isMounted && resultsRes?.data && resultsRes.data.length > 0) {
           setToppersList(resultsRes.data);
+        } else {
+          const allResultsRes = await getResults();
+          if (isMounted && allResultsRes?.data && allResultsRes.data.length > 0) {
+            setToppersList(allResultsRes.data);
+          } else {
+            setToppersList([]);
+          }
         }
       } catch (err) {
         console.warn('Could not fetch results from backend:', err);
+        if (isMounted) setToppersList([]);
       }
     };
 
@@ -127,8 +89,8 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
 
   // If on mobile, prioritize mobile view images; if none uploaded yet, fallback to desktop/all banners
   const activeBanners = isMobile
-    ? (mobileBanners.length > 0 ? mobileBanners : (desktopBanners.length > 0 ? desktopBanners : defaultBanners))
-    : (desktopBanners.length > 0 ? desktopBanners : defaultBanners);
+    ? (mobileBanners.length > 0 ? mobileBanners : (desktopBanners.length > 0 ? desktopBanners : allBanners))
+    : (desktopBanners.length > 0 ? desktopBanners : allBanners);
 
   // Reset index if out of bounds on viewport resize
   useEffect(() => {
@@ -236,7 +198,7 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
                 isMobile ? 'bg-[center_top]' : 'bg-[center_35%]'
               }`}
               style={{
-                backgroundImage: `url("${currentBanner?.imageUrl}")`,
+                backgroundImage: currentBanner?.imageUrl ? `url("${currentBanner.imageUrl}")` : undefined,
                 filter: isMobile ? 'brightness(1.05) contrast(1.03)' : 'brightness(1.08) contrast(1.04) saturate(1.08)'
               }}
             >
@@ -366,124 +328,132 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
               </motion.div>
             </div>
 
-            {/* Right Content (5 Cols): ACTUAL TOPPER CARD */}
-            <motion.div
-              initial={{ opacity: 0, x: 40, scale: 0.95 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="lg:col-span-5 flex justify-center lg:justify-end mt-4 lg:mt-0"
-            >
-              <div className="relative w-full max-w-sm" id="hero-topper-widget">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentTopper._id || topperIndex}
-                    initial={{ opacity: 0, scale: 0.92 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.4 }}
-                    className="student-slide flex flex-col items-center text-center max-w-sm mx-auto"
-                  >
-                    {/* Circle Image with Floating Badge & Previous/Next Buttons */}
-                    <div className="relative flex items-center justify-center">
-                      <div className="w-40 h-40 sm:w-52 sm:h-52 lg:w-56 lg:h-56 rounded-full p-1.5 bg-gradient-to-tr from-tertiary-fixed-dim via-surface-container-lowest to-secondary shadow-2xl transition-transform duration-300 hover:scale-105">
-                        <div className="w-full h-full rounded-full overflow-hidden border-4 border-surface-container-lowest bg-surface-container shadow-inner">
-                          <img
-                            alt={currentTopper.studentName}
-                            className="w-full h-full object-cover"
-                            src={currentTopper.photoUrl}
-                          />
+            {/* Right Content (5 Cols): REAL TOPPERS FROM BACKEND */}
+            {toppersList.length > 0 && currentTopper && (
+              <motion.div
+                initial={{ opacity: 0, x: 40, scale: 0.95 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="lg:col-span-5 flex justify-center lg:justify-end mt-4 lg:mt-0"
+              >
+                <div className="relative w-full max-w-sm" id="hero-topper-widget">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={currentTopper._id || topperIndex}
+                      initial={{ opacity: 0, scale: 0.92 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.4 }}
+                      className="student-slide flex flex-col items-center text-center max-w-sm mx-auto"
+                    >
+                      {/* Circle Image with Floating Badge & Previous/Next Buttons */}
+                      <div className="relative flex items-center justify-center">
+                        <div className="w-40 h-40 sm:w-52 sm:h-52 lg:w-56 lg:h-56 rounded-full p-1.5 bg-gradient-to-tr from-tertiary-fixed-dim via-surface-container-lowest to-secondary shadow-2xl transition-transform duration-300 hover:scale-105">
+                          <div className="w-full h-full rounded-full overflow-hidden border-4 border-surface-container-lowest bg-surface-container shadow-inner">
+                            <img
+                              alt={currentTopper.studentName}
+                              className="w-full h-full object-cover"
+                              src={currentTopper.photoUrl}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Rank / Award Badge */}
+                        <div className="absolute -bottom-3 inset-x-0 mx-auto w-max px-3 sm:px-3.5 py-1 rounded-full bg-primary text-tertiary-fixed font-label-sm text-[10px] sm:text-[11px] tracking-wider uppercase font-bold shadow-xl border border-tertiary-fixed-dim flex items-center gap-1.5 backdrop-blur-md">
+                          <span className="material-symbols-outlined text-[13px] text-tertiary-fixed" style={{ fontVariationSettings: '"FILL" 1' }}>
+                            workspace_premium
+                          </span>
+                          {currentTopper.rankTitle || 'Board Star'}
+                        </div>
+
+                        {/* Left Navigation Chevron */}
+                        {toppersList.length > 1 && (
+                          <button
+                            onClick={() =>
+                              setTopperIndex((prev) => (prev - 1 + toppersList.length) % toppersList.length)
+                            }
+                            aria-label="Previous Topper"
+                            className="topper-prev-btn absolute -left-2 sm:-left-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/90 hover:bg-secondary text-on-primary shadow-lg border border-surface-container-lowest/40 flex items-center justify-center transition-all z-20 hover:scale-110 active:scale-95"
+                          >
+                            <span className="material-symbols-outlined text-[18px] sm:text-[20px]">chevron_left</span>
+                          </button>
+                        )}
+
+                        {/* Right Navigation Chevron */}
+                        {toppersList.length > 1 && (
+                          <button
+                            onClick={() =>
+                              setTopperIndex((prev) => (prev + 1) % toppersList.length)
+                            }
+                            aria-label="Next Topper"
+                            className="topper-next-btn absolute -right-2 sm:-right-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/90 hover:bg-secondary text-on-primary shadow-lg border border-surface-container-lowest/40 flex items-center justify-center transition-all z-20 hover:scale-110 active:scale-95"
+                          >
+                            <span className="material-symbols-outlined text-[18px] sm:text-[20px]">chevron_right</span>
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Result Details Card */}
+                      <div className="mt-5 sm:mt-6 bg-surface-container-lowest/95 backdrop-blur-md px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl shadow-xl border border-surface-container-high/60 w-full max-w-xs transition-all hover:shadow-2xl text-slate-900">
+                        <div className="inline-flex items-baseline gap-1">
+                          <span className="text-3xl sm:text-4xl font-extrabold text-secondary leading-none">
+                            {currentTopper.percentage}
+                          </span>
+                          <span className="text-xl font-bold text-secondary">%</span>
+                          <span className="ml-2 px-2 py-0.5 bg-primary text-on-primary rounded text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">
+                            {currentTopper.tag || currentTopper.category?.replace('_', ' ') || 'Top Rank'}
+                          </span>
+                        </div>
+
+                        <h3 className="text-base sm:text-lg font-bold text-primary uppercase tracking-tight mt-1 truncate">
+                          {currentTopper.studentName}
+                        </h3>
+
+                        <p className="text-xs sm:text-sm text-on-surface-variant font-medium mt-0.5">
+                          {currentTopper.stream || `Session ${currentTopper.academicYear || '2024-25'}`}
+                        </p>
+
+                        <div className="mt-3 pt-2.5 border-t border-surface-container-high flex items-center justify-between text-xs">
+                          <span className="text-on-surface-variant flex items-center gap-1 font-medium text-[10px] sm:text-[11px]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
+                            {currentTopper.specialHonors || 'Distinction'}
+                          </span>
+                          <button
+                            onClick={() => onNavigate && onNavigate('results')}
+                            className="text-primary font-bold hover:text-secondary inline-flex items-center gap-0.5 transition-colors group-hover:underline"
+                          >
+                            Honor Roll <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                          </button>
                         </div>
                       </div>
+                    </motion.div>
+                  </AnimatePresence>
 
-                      {/* Rank / Award Badge */}
-                      <div className="absolute -bottom-3 inset-x-0 mx-auto w-max px-3 sm:px-3.5 py-1 rounded-full bg-primary text-tertiary-fixed font-label-sm text-[10px] sm:text-[11px] tracking-wider uppercase font-bold shadow-xl border border-tertiary-fixed-dim flex items-center gap-1.5 backdrop-blur-md">
-                        <span className="material-symbols-outlined text-[13px] text-tertiary-fixed" style={{ fontVariationSettings: '"FILL" 1' }}>
-                          workspace_premium
-                        </span>
-                        {currentTopper.rankTitle || 'Board Star'}
+                  {/* Topper Pagination indicators & slide counter */}
+                  {toppersList.length > 1 && (
+                    <div className="mt-3 flex items-center justify-center gap-3">
+                      <div className="flex items-center gap-1.5 bg-primary/70 backdrop-blur-md px-3 py-1 rounded-full border border-primary-container/40">
+                        {toppersList.map((_, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setTopperIndex(i)}
+                            className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all ${
+                              topperIndex === i
+                                ? 'bg-tertiary-fixed scale-125'
+                                : 'bg-surface-container-lowest/40 hover:bg-surface-container-lowest/80'
+                            }`}
+                            aria-label={`Topper ${i + 1}`}
+                          />
+                        ))}
                       </div>
-
-                      {/* Left Navigation Chevron */}
-                      <button
-                        onClick={() =>
-                          setTopperIndex((prev) => (prev - 1 + toppersList.length) % toppersList.length)
-                        }
-                        aria-label="Previous Topper"
-                        className="topper-prev-btn absolute -left-2 sm:-left-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/90 hover:bg-secondary text-on-primary shadow-lg border border-surface-container-lowest/40 flex items-center justify-center transition-all z-20 hover:scale-110 active:scale-95"
-                      >
-                        <span className="material-symbols-outlined text-[18px] sm:text-[20px]">chevron_left</span>
-                      </button>
-
-                      {/* Right Navigation Chevron */}
-                      <button
-                        onClick={() =>
-                          setTopperIndex((prev) => (prev + 1) % toppersList.length)
-                        }
-                        aria-label="Next Topper"
-                        className="topper-next-btn absolute -right-2 sm:-right-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/90 hover:bg-secondary text-on-primary shadow-lg border border-surface-container-lowest/40 flex items-center justify-center transition-all z-20 hover:scale-110 active:scale-95"
-                      >
-                        <span className="material-symbols-outlined text-[18px] sm:text-[20px]">chevron_right</span>
-                      </button>
+                      <span className="topper-counter text-[10px] sm:text-[11px] font-mono font-bold text-tertiary-fixed bg-primary/70 backdrop-blur-md px-2.5 py-1 rounded-full border border-primary-container/40">
+                        0{topperIndex + 1} / 0{toppersList.length}
+                      </span>
                     </div>
-
-                    {/* Result Details Card */}
-                    <div className="mt-5 sm:mt-6 bg-surface-container-lowest/95 backdrop-blur-md px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl shadow-xl border border-surface-container-high/60 w-full max-w-xs transition-all hover:shadow-2xl text-slate-900">
-                      <div className="inline-flex items-baseline gap-1">
-                        <span className="text-3xl sm:text-4xl font-extrabold text-secondary leading-none">
-                          {currentTopper.percentage}
-                        </span>
-                        <span className="text-xl font-bold text-secondary">%</span>
-                        <span className="ml-2 px-2 py-0.5 bg-primary text-on-primary rounded text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">
-                          {currentTopper.tag || currentTopper.category?.replace('_', ' ') || 'Top Rank'}
-                        </span>
-                      </div>
-
-                      <h3 className="text-base sm:text-lg font-bold text-primary uppercase tracking-tight mt-1 truncate">
-                        {currentTopper.studentName}
-                      </h3>
-
-                      <p className="text-xs sm:text-sm text-on-surface-variant font-medium mt-0.5">
-                        {currentTopper.stream || `Session ${currentTopper.academicYear || '2024-25'}`}
-                      </p>
-
-                      <div className="mt-3 pt-2.5 border-t border-surface-container-high flex items-center justify-between text-xs">
-                        <span className="text-on-surface-variant flex items-center gap-1 font-medium text-[10px] sm:text-[11px]">
-                          <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
-                          {currentTopper.specialHonors || 'Distinction'}
-                        </span>
-                        <button
-                          onClick={() => onNavigate && onNavigate('results')}
-                          className="text-primary font-bold hover:text-secondary inline-flex items-center gap-0.5 transition-colors group-hover:underline"
-                        >
-                          Honor Roll <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Topper Pagination indicators & slide counter */}
-                <div className="mt-3 flex items-center justify-center gap-3">
-                  <div className="flex items-center gap-1.5 bg-primary/70 backdrop-blur-md px-3 py-1 rounded-full border border-primary-container/40">
-                    {toppersList.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setTopperIndex(i)}
-                        className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all ${
-                          topperIndex === i
-                            ? 'bg-tertiary-fixed scale-125'
-                            : 'bg-surface-container-lowest/40 hover:bg-surface-container-lowest/80'
-                        }`}
-                        aria-label={`Topper ${i + 1}`}
-                      />
-                    ))}
-                  </div>
-                  <span className="topper-counter text-[10px] sm:text-[11px] font-mono font-bold text-tertiary-fixed bg-primary/70 backdrop-blur-md px-2.5 py-1 rounded-full border border-primary-container/40">
-                    0{topperIndex + 1} / 0{toppersList.length}
-                  </span>
+                  )}
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            )}
 
           </div>
         </div>
