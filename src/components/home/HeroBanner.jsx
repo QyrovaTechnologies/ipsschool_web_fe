@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getGalleryByPosition, getResults } from '../../api/client';
+import { getGalleryByPosition, getGallery, getResults } from '../../api/client';
 
 export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
   const [allBanners, setAllBanners] = useState([]);
