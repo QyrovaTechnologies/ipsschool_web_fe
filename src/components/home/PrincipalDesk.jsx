@@ -218,7 +218,7 @@ export default function PrincipalDesk({ onNavigate }) {
         </ScrollReveal>
 
         {/* 2 Staff Cards in a Single View (Horizontal Animated Switcher) */}
-        <div className="relative min-h-[380px]">
+        <div className="relative min-h-[460px] sm:min-h-[500px]">
           <AnimatePresence initial={false} custom={slideDirection} mode="wait">
             <motion.div
               key={currentSlide}
@@ -227,106 +227,118 @@ export default function PrincipalDesk({ onNavigate }) {
               initial="enter"
               animate="center"
               exit="exit"
-              className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-stretch"
             >
               {currentPair.map((staff, idx) => (
                 <div
                   key={staff._id || `${staff.fullName}-${idx}`}
-                  className="group relative bg-gradient-to-b from-[#001733] via-[#00132b] to-[#000d1e] text-white rounded-2xl shadow-xl hover:shadow-2xl border border-white/10 hover:border-tertiary-fixed-dim/60 transition-all duration-300 flex flex-col justify-between overflow-hidden"
+                  className="group relative bg-gradient-to-b from-[#001c3d] via-[#00132b] to-[#000a18] text-white rounded-2xl sm:rounded-3xl shadow-2xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.6)] border border-white/15 hover:border-tertiary-fixed-dim/70 transition-all duration-300 flex flex-col justify-between overflow-hidden min-h-[460px] sm:min-h-[500px]"
                 >
                   {/* Top Ambient Gold Gradient Accent Line */}
                   <div className="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-transparent via-tertiary-fixed to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
 
                   {/* Subtle Background Glows */}
-                  <div className="absolute -top-20 -right-20 w-52 h-52 rounded-full bg-secondary/10 blur-3xl pointer-events-none" />
-                  <div className="absolute -bottom-20 -left-20 w-52 h-52 rounded-full bg-tertiary-fixed/5 blur-3xl pointer-events-none" />
+                  <div className="absolute -top-24 -right-24 w-60 h-60 rounded-full bg-secondary/15 blur-3xl pointer-events-none" />
+                  <div className="absolute -bottom-24 -left-24 w-60 h-60 rounded-full bg-tertiary-fixed/10 blur-3xl pointer-events-none" />
 
                   {/* Watermark Crest */}
-                  <div className="absolute right-2 -bottom-4 opacity-[0.03] text-tertiary-fixed pointer-events-none select-none">
-                    <span className="material-symbols-outlined text-[180px] leading-none">menu_book</span>
+                  <div className="absolute right-3 -bottom-6 opacity-[0.035] text-tertiary-fixed pointer-events-none select-none">
+                    <span className="material-symbols-outlined text-[200px] leading-none">menu_book</span>
                   </div>
 
                   {/* Main Content Area */}
-                  <div className="p-5 sm:p-7 relative z-10">
+                  <div className="p-5 sm:p-7 relative z-10 flex-1 flex flex-col justify-between">
                     {/* Top Role & Department Pill Bar */}
-                    <div className="flex items-center justify-between gap-2 pb-3.5 mb-4 border-b border-white/10">
+                    <div className="flex items-center justify-between gap-2 pb-3.5 mb-4 border-b border-white/15">
                       <span
                         className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border shadow-sm ${getRoleBadgeStyle(
                           staff.role
                         )}`}
                       >
-                        <span className="material-symbols-outlined text-[13px]">workspace_premium</span>
+                        <span className="material-symbols-outlined text-[14px]">workspace_premium</span>
                         <span>{staff.role}</span>
                       </span>
 
-                      <span className="inline-flex items-center gap-1 text-[11px] text-slate-300 font-medium bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10">
+                      <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-300 font-medium bg-white/10 px-3 py-1 rounded-full border border-white/15 backdrop-blur-xs">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                         {staff.department || 'Administration'}
                       </span>
                     </div>
 
-                    {/* Member Profile Layout: Side-by-side on mobile, expansive on desktop */}
-                    <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start">
-                      {/* Portrait Photo with Multi-ring Border & Floating Pill */}
-                      <div className="flex items-center sm:block gap-4 w-full sm:w-auto flex-shrink-0">
+                    {/* Member Profile Layout: Generous portrait frame paired with structured leadership content */}
+                    <div className="flex flex-col xs:flex-row gap-5 sm:gap-6 items-start flex-1">
+                      {/* Portrait Photo Container with Gold Ring & Multi-tier Framing */}
+                      <div className="flex flex-col items-center shrink-0 mx-auto xs:mx-0">
                         <div className="relative">
-                          <div className="w-24 h-28 sm:w-32 sm:h-40 rounded-xl overflow-hidden border-2 border-tertiary-fixed-dim/50 shadow-xl bg-slate-900 group-hover:border-tertiary-fixed transition-colors">
-                            <img
-                              src={staff.photoUrl}
-                              alt={staff.fullName}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                              onError={(e) => {
-                                e.target.src =
-                                  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400';
-                              }}
-                            />
-                          </div>
-                          {staff.experienceYears > 0 && (
-                            <div className="absolute -bottom-2 inset-x-0 mx-auto w-max px-2 py-0.5 rounded-full bg-secondary text-white text-[9px] sm:text-[10px] font-bold tracking-wider uppercase shadow-md border border-white/20 whitespace-nowrap">
-                              {staff.experienceYears}+ Yrs Exp
+                          <div className="w-32 h-42 xs:w-36 xs:h-48 sm:w-40 sm:h-52 lg:w-44 lg:h-56 p-1 rounded-2xl bg-gradient-to-tr from-tertiary-fixed/80 via-white/20 to-secondary/80 shadow-2xl transition-transform duration-300 group-hover:scale-102">
+                            <div className="w-full h-full rounded-[14px] overflow-hidden bg-slate-900 border border-black/50 relative">
+                              <img
+                                src={staff.photoUrl}
+                                alt={staff.fullName}
+                                className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+                                onError={(e) => {
+                                  e.target.src =
+                                    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400';
+                                }}
+                              />
+                              {/* Soft portrait base gradient */}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-70 pointer-events-none" />
                             </div>
-                          )}
-                        </div>
+                          </div>
 
-                        {/* On mobile screens (<640px): show Name and Designation right next to the photo */}
-                        <div className="sm:hidden flex-1 min-w-0">
-                          <h3 className="font-serif font-bold text-lg text-white tracking-tight leading-snug">
-                            {staff.fullName}
-                          </h3>
-                          <p className="text-xs font-semibold text-tertiary-fixed uppercase tracking-wider mt-0.5">
-                            {staff.designation || staff.role}
-                          </p>
-                          {staff.qualification && (
-                            <p className="text-[11px] text-slate-300 font-medium mt-1 leading-snug">
-                              {staff.qualification}
-                            </p>
+                          {/* Floating Experience Badge */}
+                          {staff.experienceYears > 0 && (
+                            <div className="absolute -bottom-2.5 inset-x-0 mx-auto w-max px-2.5 py-0.5 rounded-full bg-gradient-to-r from-secondary to-[#a9343f] text-white text-[10px] font-bold tracking-wider uppercase shadow-lg border border-white/30 whitespace-nowrap flex items-center gap-1">
+                              <span className="material-symbols-outlined text-[11px]">history</span>
+                              <span>{staff.experienceYears}+ Yrs Exp</span>
+                            </div>
                           )}
                         </div>
                       </div>
 
-                      {/* Desktop Header & Quote Details */}
-                      <div className="flex-1 min-w-0 space-y-2.5 w-full">
-                        <div className="hidden sm:block">
-                          <h3 className="font-serif font-bold text-xl text-white tracking-tight">
+                      {/* Right Details Column: Name, Designation, Qualifications & Executive Statement */}
+                      <div className="flex-1 min-w-0 flex flex-col justify-between h-full space-y-3 w-full">
+                        <div>
+                          {/* Full Name */}
+                          <h3 className="font-serif font-bold text-xl sm:text-2xl text-white tracking-tight leading-snug drop-shadow-sm group-hover:text-tertiary-fixed transition-colors">
                             {staff.fullName}
                           </h3>
-                          <p className="text-xs font-semibold text-tertiary-fixed uppercase tracking-wider mt-0.5">
-                            {staff.designation || staff.role}
+
+                          {/* Designation */}
+                          <p className="text-xs sm:text-sm font-semibold text-tertiary-fixed uppercase tracking-wider mt-1 flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
+                            <span>{staff.designation || staff.role}</span>
                           </p>
+
+                          {/* Qualification Pill */}
                           {staff.qualification && (
-                            <div className="mt-1.5 flex items-center gap-1.5 text-xs text-slate-300 font-medium">
-                              <span className="material-symbols-outlined text-[15px] text-tertiary-fixed flex-shrink-0">school</span>
+                            <div className="mt-2 inline-flex items-center gap-1.5 text-xs text-slate-200 font-medium bg-white/10 px-2.5 py-1 rounded-md border border-white/15">
+                              <span className="material-symbols-outlined text-[15px] text-tertiary-fixed shrink-0">school</span>
                               <span>{staff.qualification}</span>
+                            </div>
+                          )}
+
+                          {/* Subjects / Domain Expertise */}
+                          {staff.subjectsTaught && staff.subjectsTaught.length > 0 && (
+                            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                              {staff.subjectsTaught.slice(0, 3).map((subj, sIdx) => (
+                                <span
+                                  key={sIdx}
+                                  className="text-[10px] font-medium bg-white/5 border border-white/10 text-slate-300 px-2 py-0.5 rounded-full"
+                                >
+                                  {subj}
+                                </span>
+                              ))}
                             </div>
                           )}
                         </div>
 
-                        {/* Editorial Message / Quote Box */}
-                        <div className="relative bg-white/[0.04] p-3 sm:p-3.5 rounded-xl border border-white/10 mt-1">
-                          <span className="material-symbols-outlined absolute top-1.5 right-2 text-[26px] text-white/10 select-none pointer-events-none">
+                        {/* Executive Leadership Message Box */}
+                        <div className="relative bg-gradient-to-br from-white/[0.08] to-white/[0.02] backdrop-blur-md p-4 sm:p-4.5 rounded-2xl border border-white/15 mt-2.5 shadow-inner">
+                          <span className="material-symbols-outlined absolute top-2 right-2.5 text-[28px] text-white/15 select-none pointer-events-none">
                             format_quote
                           </span>
-                          <p className="font-serif italic text-xs sm:text-[13px] text-slate-200 leading-relaxed relative z-10">
+                          <p className="font-serif italic text-xs sm:text-[13px] lg:text-[14px] text-slate-100 leading-relaxed relative z-10">
                             “{staff.message ||
                               'Committed to scholastic distinction, values-driven pedagogy, and the holistic growth of every student.'}”
                           </p>
@@ -336,18 +348,22 @@ export default function PrincipalDesk({ onNavigate }) {
                   </div>
 
                   {/* Card Footer: Signature and Link */}
-                  <div className="px-5 py-3 sm:px-7 sm:py-3.5 bg-black/40 border-t border-white/10 flex items-center justify-between text-xs relative z-10">
+                  <div className="px-5 py-3.5 sm:px-7 sm:py-4 bg-black/50 backdrop-blur-md border-t border-white/15 flex items-center justify-between text-xs relative z-10">
                     <div className="flex items-center gap-1.5 text-tertiary-fixed font-medium">
-                      <span className="material-symbols-outlined text-[15px]">verified</span>
-                      <span className="font-serif italic text-xs sm:text-sm font-semibold">{staff.fullName}</span>
+                      <span className="material-symbols-outlined text-[16px]">verified</span>
+                      <span className="font-serif italic text-xs sm:text-sm font-semibold tracking-wide">
+                        {staff.fullName}
+                      </span>
                     </div>
 
                     <button
                       onClick={() => onNavigate && onNavigate('staff')}
-                      className="inline-flex items-center gap-1 text-slate-300 hover:text-tertiary-fixed transition-colors font-semibold group/btn"
+                      className="inline-flex items-center gap-1.5 text-slate-300 hover:text-tertiary-fixed transition-colors font-semibold group/btn px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10"
                     >
-                      <span>View Profile</span>
-                      <span className="material-symbols-outlined text-[14px] group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+                      <span>View Faculty Profile</span>
+                      <span className="material-symbols-outlined text-[14px] group-hover/btn:translate-x-1 transition-transform">
+                        arrow_forward
+                      </span>
                     </button>
                   </div>
                 </div>
