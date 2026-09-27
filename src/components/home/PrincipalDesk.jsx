@@ -295,7 +295,7 @@ export default function PrincipalDesk({ onNavigate }) {
                         </div>
 
                         {/* On mobile screens (<640px): show Name, Designation & Qualification right next to the photo */}
-                        <div className="sm:hidden flex-1 min-w-0 space-y-0.5">
+                        <div className="sm:hidden flex-1 min-w-0 space-y-1">
                           <h3 className="font-serif font-bold text-base text-white tracking-tight leading-snug">
                             {staff.fullName}
                           </h3>
@@ -304,9 +304,9 @@ export default function PrincipalDesk({ onNavigate }) {
                             <span className="truncate">{staff.designation || staff.role}</span>
                           </p>
                           {staff.qualification && (
-                            <div className="inline-flex items-center gap-1 text-[10px] text-slate-300 font-medium bg-white/10 px-2 py-0.5 rounded border border-white/15">
-                              <span className="material-symbols-outlined text-[12px] text-tertiary-fixed shrink-0">school</span>
-                              <span className="truncate">{staff.qualification}</span>
+                            <div className="flex items-start gap-1 text-[10px] text-slate-200 font-medium bg-white/10 px-2 py-0.5 rounded border border-white/15 max-w-full">
+                              <span className="material-symbols-outlined text-[12px] text-tertiary-fixed shrink-0 mt-0.5">school</span>
+                              <span className="line-clamp-2 leading-tight break-words">{staff.qualification}</span>
                             </div>
                           )}
                         </div>
@@ -324,9 +324,9 @@ export default function PrincipalDesk({ onNavigate }) {
                             <span>{staff.designation || staff.role}</span>
                           </p>
                           {staff.qualification && (
-                            <div className="mt-1.5 inline-flex items-center gap-1 text-xs text-slate-200 font-medium bg-white/10 px-2 py-0.5 rounded border border-white/15">
-                              <span className="material-symbols-outlined text-[14px] text-tertiary-fixed shrink-0">school</span>
-                              <span>{staff.qualification}</span>
+                            <div className="mt-1.5 inline-flex items-start gap-1.5 text-xs text-slate-200 font-medium bg-white/10 px-2.5 py-1 rounded border border-white/15 max-w-full">
+                              <span className="material-symbols-outlined text-[14px] text-tertiary-fixed shrink-0 mt-0.5">school</span>
+                              <span className="leading-snug break-words">{staff.qualification}</span>
                             </div>
                           )}
                           {staff.subjectsTaught && staff.subjectsTaught.length > 0 && (
