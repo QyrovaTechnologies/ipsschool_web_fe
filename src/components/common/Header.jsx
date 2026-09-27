@@ -5,15 +5,7 @@ import { Linkedin, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
 export default function Header() {
   const [isVisible, setIsVisible] = useState(true);
 
-  // On mobile view (<768px), auto-close the top bar after 5 seconds
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.innerWidth < 768) {
-      const timer = setTimeout(() => {
-        setIsVisible(false);
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, []);
+  // Keep header always visible unless user explicitly clicks the close button
 
   return (
     <AnimatePresence>
@@ -131,11 +123,13 @@ export default function Header() {
               {/* Dismiss / Close X Button */}
               <button
                 onClick={() => setIsVisible(false)}
-                className="w-6 h-6 rounded-full hover:bg-white/20 active:scale-95 flex items-center justify-center text-slate-300 hover:text-white transition-colors cursor-pointer"
-                aria-label="Close notification header"
-                title="Close Header Bar"
+                className="group relative flex items-center justify-center w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-slate-200 hover:text-white transition-all duration-200 active:scale-90 shadow-xs cursor-pointer ml-1"
+                aria-label="Close notification top bar"
+                title="Dismiss top bar"
               >
-                <span className="material-symbols-outlined text-[16px]">close</span>
+                <span className="material-symbols-outlined text-[14px] transition-transform duration-200 group-hover:rotate-90">
+                  close
+                </span>
               </button>
             </div>
           </div>
