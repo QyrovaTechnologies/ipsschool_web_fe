@@ -265,13 +265,13 @@ export default function PrincipalDesk({ onNavigate }) {
                       </span>
                     </div>
 
-                    {/* Member Profile Layout: Generous portrait frame paired with structured leadership content */}
-                    <div className="flex flex-col xs:flex-row gap-5 sm:gap-6 items-start flex-1">
-                      {/* Portrait Photo Container with Gold Ring & Multi-tier Framing */}
-                      <div className="flex flex-col items-center shrink-0 mx-auto xs:mx-0">
-                        <div className="relative">
-                          <div className="w-32 h-42 xs:w-36 xs:h-48 sm:w-40 sm:h-52 lg:w-44 lg:h-56 p-1 rounded-2xl bg-gradient-to-tr from-tertiary-fixed/80 via-white/20 to-secondary/80 shadow-2xl transition-transform duration-300 group-hover:scale-102">
-                            <div className="w-full h-full rounded-[14px] overflow-hidden bg-slate-900 border border-black/50 relative">
+                    {/* Member Profile Layout: Side-by-side on mobile, expansive on desktop */}
+                    <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start flex-1">
+                      {/* Portrait Photo with Multi-ring Border & Floating Pill */}
+                      <div className="flex items-center sm:block gap-4 w-full sm:w-auto flex-shrink-0">
+                        <div className="relative shrink-0">
+                          <div className="w-24 h-32 xs:w-28 xs:h-36 sm:w-36 sm:h-48 rounded-2xl overflow-hidden p-1 bg-gradient-to-tr from-tertiary-fixed/80 via-white/20 to-secondary/80 shadow-xl group-hover:scale-102 transition-transform duration-300">
+                            <div className="w-full h-full rounded-xl overflow-hidden bg-slate-900 border border-black/40 relative">
                               <img
                                 src={staff.photoUrl}
                                 alt={staff.fullName}
@@ -281,44 +281,54 @@ export default function PrincipalDesk({ onNavigate }) {
                                     'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400';
                                 }}
                               />
-                              {/* Soft portrait base gradient */}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-70 pointer-events-none" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60 pointer-events-none" />
                             </div>
                           </div>
 
                           {/* Floating Experience Badge */}
                           {staff.experienceYears > 0 && (
-                            <div className="absolute -bottom-2.5 inset-x-0 mx-auto w-max px-2.5 py-0.5 rounded-full bg-gradient-to-r from-secondary to-[#a9343f] text-white text-[10px] font-bold tracking-wider uppercase shadow-lg border border-white/30 whitespace-nowrap flex items-center gap-1">
-                              <span className="material-symbols-outlined text-[11px]">history</span>
+                            <div className="absolute -bottom-2.5 inset-x-0 mx-auto w-max px-2.5 py-0.5 rounded-full bg-gradient-to-r from-secondary to-[#a9343f] text-white text-[9px] sm:text-[10px] font-bold tracking-wider uppercase shadow-md border border-white/30 whitespace-nowrap flex items-center gap-1">
+                              <span className="material-symbols-outlined text-[10px] sm:text-[11px]">history</span>
                               <span>{staff.experienceYears}+ Yrs Exp</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* On mobile screens (<640px): show Name, Designation & Qualification right next to the photo */}
+                        <div className="sm:hidden flex-1 min-w-0 space-y-1">
+                          <h3 className="font-serif font-bold text-base xs:text-lg text-white tracking-tight leading-snug">
+                            {staff.fullName}
+                          </h3>
+                          <p className="text-xs font-semibold text-tertiary-fixed uppercase tracking-wider flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0" />
+                            <span className="truncate">{staff.designation || staff.role}</span>
+                          </p>
+                          {staff.qualification && (
+                            <div className="inline-flex items-center gap-1 text-[11px] text-slate-300 font-medium bg-white/10 px-2 py-0.5 rounded border border-white/15">
+                              <span className="material-symbols-outlined text-[13px] text-tertiary-fixed shrink-0">school</span>
+                              <span className="truncate">{staff.qualification}</span>
                             </div>
                           )}
                         </div>
                       </div>
 
-                      {/* Right Details Column: Name, Designation, Qualifications & Executive Statement */}
-                      <div className="flex-1 min-w-0 flex flex-col justify-between h-full space-y-3 w-full">
-                        <div>
-                          {/* Full Name */}
-                          <h3 className="font-serif font-bold text-xl sm:text-2xl text-white tracking-tight leading-snug drop-shadow-sm group-hover:text-tertiary-fixed transition-colors">
+                      {/* Desktop Header & Details + Shared Quote Box */}
+                      <div className="flex-1 min-w-0 flex flex-col justify-between h-full space-y-2.5 w-full">
+                        {/* Desktop Only: Name, Designation, Qualification, Subjects */}
+                        <div className="hidden sm:block">
+                          <h3 className="font-serif font-bold text-xl sm:text-2xl text-white tracking-tight leading-snug group-hover:text-tertiary-fixed transition-colors">
                             {staff.fullName}
                           </h3>
-
-                          {/* Designation */}
-                          <p className="text-xs sm:text-sm font-semibold text-tertiary-fixed uppercase tracking-wider mt-1 flex items-center gap-1">
+                          <p className="text-xs sm:text-sm font-semibold text-tertiary-fixed uppercase tracking-wider mt-1 flex items-center gap-1.5">
                             <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
                             <span>{staff.designation || staff.role}</span>
                           </p>
-
-                          {/* Qualification Pill */}
                           {staff.qualification && (
                             <div className="mt-2 inline-flex items-center gap-1.5 text-xs text-slate-200 font-medium bg-white/10 px-2.5 py-1 rounded-md border border-white/15">
                               <span className="material-symbols-outlined text-[15px] text-tertiary-fixed shrink-0">school</span>
                               <span>{staff.qualification}</span>
                             </div>
                           )}
-
-                          {/* Subjects / Domain Expertise */}
                           {staff.subjectsTaught && staff.subjectsTaught.length > 0 && (
                             <div className="mt-2 flex flex-wrap items-center gap-1.5">
                               {staff.subjectsTaught.slice(0, 3).map((subj, sIdx) => (
@@ -334,8 +344,8 @@ export default function PrincipalDesk({ onNavigate }) {
                         </div>
 
                         {/* Executive Leadership Message Box */}
-                        <div className="relative bg-gradient-to-br from-white/[0.08] to-white/[0.02] backdrop-blur-md p-4 sm:p-4.5 rounded-2xl border border-white/15 mt-2.5 shadow-inner">
-                          <span className="material-symbols-outlined absolute top-2 right-2.5 text-[28px] text-white/15 select-none pointer-events-none">
+                        <div className="relative bg-gradient-to-br from-white/[0.08] to-white/[0.02] backdrop-blur-md p-3.5 sm:p-4 rounded-xl border border-white/15 mt-2 sm:mt-1 shadow-inner flex-1 flex flex-col justify-center">
+                          <span className="material-symbols-outlined absolute top-2 right-2.5 text-[24px] sm:text-[26px] text-white/15 select-none pointer-events-none">
                             format_quote
                           </span>
                           <p className="font-serif italic text-xs sm:text-[13px] lg:text-[14px] text-slate-100 leading-relaxed relative z-10">
