@@ -218,7 +218,7 @@ export default function PrincipalDesk({ onNavigate }) {
         </ScrollReveal>
 
         {/* 2 Staff Cards in a Single View (Horizontal Animated Switcher) */}
-        <div className="relative min-h-[460px] sm:min-h-[500px]">
+        <div className="relative min-h-[330px] sm:min-h-[350px]">
           <AnimatePresence initial={false} custom={slideDirection} mode="wait">
             <motion.div
               key={currentSlide}
@@ -227,51 +227,51 @@ export default function PrincipalDesk({ onNavigate }) {
               initial="enter"
               animate="center"
               exit="exit"
-              className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-stretch"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6 items-stretch"
             >
               {currentPair.map((staff, idx) => (
                 <div
                   key={staff._id || `${staff.fullName}-${idx}`}
-                  className="group relative bg-gradient-to-b from-[#001c3d] via-[#00132b] to-[#000a18] text-white rounded-2xl sm:rounded-3xl shadow-2xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.6)] border border-white/15 hover:border-tertiary-fixed-dim/70 transition-all duration-300 flex flex-col justify-between overflow-hidden min-h-[460px] sm:min-h-[500px]"
+                  className="group relative bg-gradient-to-b from-[#001733] via-[#00132b] to-[#000d1e] text-white rounded-2xl shadow-xl hover:shadow-2xl border border-white/10 hover:border-tertiary-fixed-dim/60 transition-all duration-300 flex flex-col justify-between overflow-hidden"
                 >
                   {/* Top Ambient Gold Gradient Accent Line */}
-                  <div className="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-transparent via-tertiary-fixed to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-tertiary-fixed to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
 
                   {/* Subtle Background Glows */}
-                  <div className="absolute -top-24 -right-24 w-60 h-60 rounded-full bg-secondary/15 blur-3xl pointer-events-none" />
-                  <div className="absolute -bottom-24 -left-24 w-60 h-60 rounded-full bg-tertiary-fixed/10 blur-3xl pointer-events-none" />
+                  <div className="absolute -top-16 -right-16 w-44 h-44 rounded-full bg-secondary/10 blur-3xl pointer-events-none" />
+                  <div className="absolute -bottom-16 -left-16 w-44 h-44 rounded-full bg-tertiary-fixed/5 blur-3xl pointer-events-none" />
 
                   {/* Watermark Crest */}
-                  <div className="absolute right-3 -bottom-6 opacity-[0.035] text-tertiary-fixed pointer-events-none select-none">
-                    <span className="material-symbols-outlined text-[200px] leading-none">menu_book</span>
+                  <div className="absolute right-2 -bottom-4 opacity-[0.03] text-tertiary-fixed pointer-events-none select-none">
+                    <span className="material-symbols-outlined text-[160px] leading-none">menu_book</span>
                   </div>
 
                   {/* Main Content Area */}
-                  <div className="p-5 sm:p-7 relative z-10 flex-1 flex flex-col justify-between">
+                  <div className="p-4 sm:p-5 relative z-10 flex-1 flex flex-col justify-between">
                     {/* Top Role & Department Pill Bar */}
-                    <div className="flex items-center justify-between gap-2 pb-3.5 mb-4 border-b border-white/15">
+                    <div className="flex items-center justify-between gap-2 pb-2.5 mb-3 border-b border-white/10">
                       <span
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border shadow-sm ${getRoleBadgeStyle(
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider border shadow-sm ${getRoleBadgeStyle(
                           staff.role
                         )}`}
                       >
-                        <span className="material-symbols-outlined text-[14px]">workspace_premium</span>
+                        <span className="material-symbols-outlined text-[13px]">workspace_premium</span>
                         <span>{staff.role}</span>
                       </span>
 
-                      <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-300 font-medium bg-white/10 px-3 py-1 rounded-full border border-white/15 backdrop-blur-xs">
+                      <span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] text-slate-300 font-medium bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                         {staff.department || 'Administration'}
                       </span>
                     </div>
 
                     {/* Member Profile Layout: Side-by-side on mobile, expansive on desktop */}
-                    <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start flex-1">
+                    <div className="flex flex-col sm:flex-row gap-3.5 sm:gap-5 items-start flex-1">
                       {/* Portrait Photo with Multi-ring Border & Floating Pill */}
-                      <div className="flex items-center sm:block gap-4 w-full sm:w-auto flex-shrink-0">
+                      <div className="flex items-center sm:block gap-3.5 w-full sm:w-auto flex-shrink-0">
                         <div className="relative shrink-0">
-                          <div className="w-24 h-32 xs:w-28 xs:h-36 sm:w-36 sm:h-48 rounded-2xl overflow-hidden p-1 bg-gradient-to-tr from-tertiary-fixed/80 via-white/20 to-secondary/80 shadow-xl group-hover:scale-102 transition-transform duration-300">
-                            <div className="w-full h-full rounded-xl overflow-hidden bg-slate-900 border border-black/40 relative">
+                          <div className="w-22 h-28 xs:w-24 xs:h-32 sm:w-30 sm:h-38 rounded-xl overflow-hidden p-0.5 bg-gradient-to-tr from-tertiary-fixed/70 via-white/15 to-secondary/70 shadow-lg group-hover:scale-102 transition-transform duration-300">
+                            <div className="w-full h-full rounded-[10px] overflow-hidden bg-slate-900 border border-black/40 relative">
                               <img
                                 src={staff.photoUrl}
                                 alt={staff.fullName}
@@ -287,25 +287,25 @@ export default function PrincipalDesk({ onNavigate }) {
 
                           {/* Floating Experience Badge */}
                           {staff.experienceYears > 0 && (
-                            <div className="absolute -bottom-2.5 inset-x-0 mx-auto w-max px-2.5 py-0.5 rounded-full bg-gradient-to-r from-secondary to-[#a9343f] text-white text-[9px] sm:text-[10px] font-bold tracking-wider uppercase shadow-md border border-white/30 whitespace-nowrap flex items-center gap-1">
-                              <span className="material-symbols-outlined text-[10px] sm:text-[11px]">history</span>
-                              <span>{staff.experienceYears}+ Yrs Exp</span>
+                            <div className="absolute -bottom-2 inset-x-0 mx-auto w-max px-2 py-0.5 rounded-full bg-gradient-to-r from-secondary to-[#a9343f] text-white text-[9px] font-bold tracking-wider uppercase shadow-md border border-white/30 whitespace-nowrap flex items-center gap-0.5">
+                              <span className="material-symbols-outlined text-[10px]">history</span>
+                              <span>{staff.experienceYears}+ Yrs</span>
                             </div>
                           )}
                         </div>
 
                         {/* On mobile screens (<640px): show Name, Designation & Qualification right next to the photo */}
-                        <div className="sm:hidden flex-1 min-w-0 space-y-1">
-                          <h3 className="font-serif font-bold text-base xs:text-lg text-white tracking-tight leading-snug">
+                        <div className="sm:hidden flex-1 min-w-0 space-y-0.5">
+                          <h3 className="font-serif font-bold text-base text-white tracking-tight leading-snug">
                             {staff.fullName}
                           </h3>
-                          <p className="text-xs font-semibold text-tertiary-fixed uppercase tracking-wider flex items-center gap-1">
+                          <p className="text-[11px] font-semibold text-tertiary-fixed uppercase tracking-wider flex items-center gap-1">
                             <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0" />
                             <span className="truncate">{staff.designation || staff.role}</span>
                           </p>
                           {staff.qualification && (
-                            <div className="inline-flex items-center gap-1 text-[11px] text-slate-300 font-medium bg-white/10 px-2 py-0.5 rounded border border-white/15">
-                              <span className="material-symbols-outlined text-[13px] text-tertiary-fixed shrink-0">school</span>
+                            <div className="inline-flex items-center gap-1 text-[10px] text-slate-300 font-medium bg-white/10 px-2 py-0.5 rounded border border-white/15">
+                              <span className="material-symbols-outlined text-[12px] text-tertiary-fixed shrink-0">school</span>
                               <span className="truncate">{staff.qualification}</span>
                             </div>
                           )}
@@ -313,28 +313,28 @@ export default function PrincipalDesk({ onNavigate }) {
                       </div>
 
                       {/* Desktop Header & Details + Shared Quote Box */}
-                      <div className="flex-1 min-w-0 flex flex-col justify-between h-full space-y-2.5 w-full">
+                      <div className="flex-1 min-w-0 flex flex-col justify-between space-y-2 w-full">
                         {/* Desktop Only: Name, Designation, Qualification, Subjects */}
                         <div className="hidden sm:block">
-                          <h3 className="font-serif font-bold text-xl sm:text-2xl text-white tracking-tight leading-snug group-hover:text-tertiary-fixed transition-colors">
+                          <h3 className="font-serif font-bold text-lg sm:text-xl text-white tracking-tight leading-snug group-hover:text-tertiary-fixed transition-colors">
                             {staff.fullName}
                           </h3>
-                          <p className="text-xs sm:text-sm font-semibold text-tertiary-fixed uppercase tracking-wider mt-1 flex items-center gap-1.5">
+                          <p className="text-xs font-semibold text-tertiary-fixed uppercase tracking-wider mt-0.5 flex items-center gap-1">
                             <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
                             <span>{staff.designation || staff.role}</span>
                           </p>
                           {staff.qualification && (
-                            <div className="mt-2 inline-flex items-center gap-1.5 text-xs text-slate-200 font-medium bg-white/10 px-2.5 py-1 rounded-md border border-white/15">
-                              <span className="material-symbols-outlined text-[15px] text-tertiary-fixed shrink-0">school</span>
+                            <div className="mt-1.5 inline-flex items-center gap-1 text-xs text-slate-200 font-medium bg-white/10 px-2 py-0.5 rounded border border-white/15">
+                              <span className="material-symbols-outlined text-[14px] text-tertiary-fixed shrink-0">school</span>
                               <span>{staff.qualification}</span>
                             </div>
                           )}
                           {staff.subjectsTaught && staff.subjectsTaught.length > 0 && (
-                            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                            <div className="mt-1.5 flex flex-wrap items-center gap-1">
                               {staff.subjectsTaught.slice(0, 3).map((subj, sIdx) => (
                                 <span
                                   key={sIdx}
-                                  className="text-[10px] font-medium bg-white/5 border border-white/10 text-slate-300 px-2 py-0.5 rounded-full"
+                                  className="text-[9px] font-medium bg-white/5 border border-white/10 text-slate-300 px-2 py-0.2 rounded-full"
                                 >
                                   {subj}
                                 </span>
@@ -344,11 +344,11 @@ export default function PrincipalDesk({ onNavigate }) {
                         </div>
 
                         {/* Executive Leadership Message Box */}
-                        <div className="relative bg-gradient-to-br from-white/[0.08] to-white/[0.02] backdrop-blur-md p-3.5 sm:p-4 rounded-xl border border-white/15 mt-2 sm:mt-1 shadow-inner flex-1 flex flex-col justify-center">
-                          <span className="material-symbols-outlined absolute top-2 right-2.5 text-[24px] sm:text-[26px] text-white/15 select-none pointer-events-none">
+                        <div className="relative bg-white/[0.04] p-3 sm:p-3.5 rounded-xl border border-white/10 mt-1.5">
+                          <span className="material-symbols-outlined absolute top-1.5 right-2 text-[22px] text-white/10 select-none pointer-events-none">
                             format_quote
                           </span>
-                          <p className="font-serif italic text-xs sm:text-[13px] lg:text-[14px] text-slate-100 leading-relaxed relative z-10">
+                          <p className="font-serif italic text-xs sm:text-[13px] text-slate-200 leading-relaxed relative z-10">
                             “{staff.message ||
                               'Committed to scholastic distinction, values-driven pedagogy, and the holistic growth of every student.'}”
                           </p>
@@ -358,20 +358,20 @@ export default function PrincipalDesk({ onNavigate }) {
                   </div>
 
                   {/* Card Footer: Signature and Link */}
-                  <div className="px-5 py-3.5 sm:px-7 sm:py-4 bg-black/50 backdrop-blur-md border-t border-white/15 flex items-center justify-between text-xs relative z-10">
+                  <div className="px-4 py-2.5 sm:px-5 sm:py-3 bg-black/40 border-t border-white/10 flex items-center justify-between text-xs relative z-10">
                     <div className="flex items-center gap-1.5 text-tertiary-fixed font-medium">
-                      <span className="material-symbols-outlined text-[16px]">verified</span>
-                      <span className="font-serif italic text-xs sm:text-sm font-semibold tracking-wide">
+                      <span className="material-symbols-outlined text-[15px]">verified</span>
+                      <span className="font-serif italic text-xs font-semibold tracking-wide">
                         {staff.fullName}
                       </span>
                     </div>
 
                     <button
                       onClick={() => onNavigate && onNavigate('staff')}
-                      className="inline-flex items-center gap-1.5 text-slate-300 hover:text-tertiary-fixed transition-colors font-semibold group/btn px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/15 border border-white/10"
+                      className="inline-flex items-center gap-1 text-slate-300 hover:text-tertiary-fixed transition-colors font-semibold group/btn text-[11px] sm:text-xs"
                     >
-                      <span>View Faculty Profile</span>
-                      <span className="material-symbols-outlined text-[14px] group-hover/btn:translate-x-1 transition-transform">
+                      <span>View Profile</span>
+                      <span className="material-symbols-outlined text-[13px] group-hover/btn:translate-x-1 transition-transform">
                         arrow_forward
                       </span>
                     </button>
