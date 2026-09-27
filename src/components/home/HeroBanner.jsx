@@ -9,7 +9,11 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
   const [topperIndex, setTopperIndex] = useState(0);
   const checkIsMobile = () => {
     if (typeof window !== 'undefined') {
-      return window.innerWidth < 768 || window.matchMedia('(max-width: 767px)').matches;
+      return (
+        window.innerWidth < 768 ||
+        window.matchMedia('(max-width: 767px)').matches ||
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      );
     }
     return false;
   };
@@ -28,7 +32,11 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
     };
     handleResize();
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
   }, []);
 
   // Reset banner index when switching between mobile and desktop view
@@ -49,9 +57,10 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
         ]);
 
         if (isMounted) {
+          // Put mobile banners into the pool with general banners and all gallery
           const combined = [
-            ...(generalRes?.data || []),
-            ...(mobileRes?.data || [])
+            ...(mobileRes?.data || []),
+            ...(generalRes?.data || [])
           ];
           const finalBanners = combined.length > 0 ? combined : (allRes?.data || []);
           setAllBanners(finalBanners);
@@ -85,16 +94,25 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
     };
   }, []);
 
+  // Helper to reliably check if banner is designed for mobile view
+  const isMobileBannerItem = (b) => {
+    if (!b) return false;
+    const view = (b.view || '').toLowerCase();
+    const pos = (b.position || b.placement || '').toLowerCase();
+    const title = (b.title || '').toLowerCase();
+    return (
+      view === 'mobile' ||
+      pos === 'hero_banner_mobile' ||
+      pos.includes('mobile') ||
+      title.includes('mobile')
+    );
+  };
+
   // Filter banners dynamically according to whether current viewport is Mobile or Desktop
-  const mobileBanners = allBanners.filter(
-    (b) => b.view === 'mobile' || b.position === 'hero_banner_mobile'
-  );
+  const mobileBanners = allBanners.filter(isMobileBannerItem);
+  const desktopBanners = allBanners.filter((b) => !isMobileBannerItem(b));
 
-  const desktopBanners = allBanners.filter(
-    (b) => b.view === 'desktop' || (b.view !== 'mobile' && b.position !== 'hero_banner_mobile')
-  );
-
-  // If on mobile, prioritize mobile view images; if none uploaded yet, fallback to desktop/all banners
+  // If on mobile, strictly show mobile banners; only fallback to desktop if no mobile banner exists
   const activeBanners = isMobile
     ? (mobileBanners.length > 0 ? mobileBanners : (desktopBanners.length > 0 ? desktopBanners : allBanners))
     : (desktopBanners.length > 0 ? desktopBanners : allBanners);
