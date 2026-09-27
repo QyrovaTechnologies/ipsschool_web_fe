@@ -7,27 +7,34 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState(1);
   const [topperIndex, setTopperIndex] = useState(0);
-  const [isMobile, setIsMobile] = useState(() => {
+  const checkIsMobile = () => {
     if (typeof window !== 'undefined') {
-      return window.innerWidth < 768;
+      return window.innerWidth < 768 || window.matchMedia('(max-width: 767px)').matches;
     }
     return false;
-  });
+  };
+
+  const [isMobile, setIsMobile] = useState(checkIsMobile);
+  const [toppersList, setToppersList] = useState([]);
 
   // Touch swipe support for mobile
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  const [toppersList, setToppersList] = useState([]);
-
   // Screen resize listener to detect mobile vs desktop viewport
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(checkIsMobile());
     };
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Reset banner index when switching between mobile and desktop view
+  useEffect(() => {
+    setCurrentBannerIndex(0);
+  }, [isMobile]);
 
   // Fetch all images uploaded with position === 'hero_banner' or 'hero_banner_mobile' from backend
   useEffect(() => {
