@@ -9,20 +9,16 @@ export default function GalleryPage({ onOpenAdmin }) {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Screen Viewport Detection
+  // Screen Viewport Detection with mobile userAgent detection
   const [isMobileScreen, setIsMobileScreen] = useState(() => {
-    if (typeof window !== 'undefined') return window.innerWidth < 768;
-    return false;
-  });
-
-  // Subcategory View Filter: 'standard' (desktop/landscape), 'mobile' (mobile banners), or 'all'
-  // On desktop screens: defaults to 'standard' (no vertical mobile distortion)
-  // On mobile screens: defaults to 'mobile' (mobile-optimized banners)
-  const [viewFilter, setViewFilter] = useState(() => {
-    if (typeof window !== 'undefined' && window.innerWidth < 768) {
-      return 'mobile';
+    if (typeof window !== 'undefined') {
+      return (
+        window.innerWidth < 768 ||
+        window.matchMedia('(max-width: 767px)').matches ||
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      );
     }
-    return 'standard';
+    return false;
   });
 
   // Slider State
@@ -38,11 +34,19 @@ export default function GalleryPage({ onOpenAdmin }) {
 
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 768;
+      const mobile =
+        window.innerWidth < 768 ||
+        window.matchMedia('(max-width: 767px)').matches ||
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       setIsMobileScreen(mobile);
     };
+    handleResize();
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
   }, []);
 
   // Fetch all gallery data once
@@ -73,13 +77,17 @@ export default function GalleryPage({ onOpenAdmin }) {
 
   // Helper to resolve clean subcategory metadata
   const getSubcategoryInfo = useCallback((item) => {
-    const pos = item.position || '';
+    const pos = (item.position || item.placement || '').toLowerCase();
+    const view = (item.view || '').toLowerCase();
+    const title = (item.title || '').toLowerCase();
+
     const isMobile =
       pos.includes('mobile') ||
-      item.view === 'mobile' ||
-      (item.title || '').toLowerCase().includes('mobile');
+      pos === 'hero_banner_mobile' ||
+      view === 'mobile' ||
+      title.includes('mobile');
 
-    if (isMobile || pos === 'hero_banner_mobile') {
+    if (isMobile) {
       return {
         key: 'hero_banner_mobile',
         label: 'Hero Image (Mobile View)',
@@ -128,8 +136,8 @@ export default function GalleryPage({ onOpenAdmin }) {
       };
     }
     return {
-      key: pos || 'general',
-      label: (pos || 'General').replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+      key: item.position || 'general',
+      label: (item.position || 'General').replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
       icon: 'photo_library',
       badgeColor: 'bg-slate-800 text-white'
     };
@@ -158,19 +166,47 @@ export default function GalleryPage({ onOpenAdmin }) {
       subcatMap[info.key].count += 1;
     });
 
+    const subcats = Object.values(subcatMap);
+    // Sort subcategories based on screen: on mobile screens, mobile banner first!
+    subcats.sort((a, b) => {
+      if (isMobileScreen) {
+        if (a.key === 'hero_banner_mobile') return -1;
+        if (b.key === 'hero_banner_mobile') return 1;
+      } else {
+        if (a.key === 'hero_banner') return -1;
+        if (b.key === 'hero_banner') return 1;
+      }
+      return 0;
+    });
+
     return [
       { key: 'all', label: 'All Photos', icon: 'view_module', count: items.length },
-      ...Object.values(subcatMap)
+      ...subcats
     ];
-  }, [allGalleryItems, selectedCategory, getSubcategoryInfo]);
+  }, [allGalleryItems, selectedCategory, getSubcategoryInfo, isMobileScreen]);
 
-  // Selected subcategory state (defaults to 'all', or auto-switches to mobile on mobile view)
+  // Selected subcategory state
   const [selectedSubcategory, setSelectedSubcategory] = useState('all');
 
-  // When category changes, reset subcategory
+  // When on mobile screen, auto-select mobile subcategory if available
   useEffect(() => {
-    setSelectedSubcategory('all');
-  }, [selectedCategory]);
+    if (isMobileScreen) {
+      const hasMobile = availableSubcategories.some((s) => s.key === 'hero_banner_mobile');
+      if (hasMobile) {
+        setSelectedSubcategory('hero_banner_mobile');
+      }
+    }
+  }, [isMobileScreen, availableSubcategories]);
+
+  // When category changes, reset or pick appropriate subcategory
+  useEffect(() => {
+    if (isMobileScreen) {
+      const hasMobile = availableSubcategories.some((s) => s.key === 'hero_banner_mobile');
+      setSelectedSubcategory(hasMobile ? 'hero_banner_mobile' : 'all');
+    } else {
+      setSelectedSubcategory('all');
+    }
+  }, [selectedCategory, isMobileScreen, availableSubcategories]);
 
   // Filter items for the dynamic showcase slider based on:
   // 1. Category (selectedCategory)
@@ -191,10 +227,26 @@ export default function GalleryPage({ onOpenAdmin }) {
         const info = getSubcategoryInfo(item);
         return info.key === selectedSubcategory;
       });
+    } else {
+      // If 'all' chosen, sort based on viewport:
+      // Mobile screen -> mobile banners first
+      // Desktop screen -> desktop banners first
+      items = [...items].sort((a, b) => {
+        const aIsMobile = getSubcategoryInfo(a).key === 'hero_banner_mobile';
+        const bIsMobile = getSubcategoryInfo(b).key === 'hero_banner_mobile';
+        if (isMobileScreen) {
+          if (aIsMobile && !bIsMobile) return -1;
+          if (!aIsMobile && bIsMobile) return 1;
+        } else {
+          if (!aIsMobile && bIsMobile) return -1;
+          if (aIsMobile && !bIsMobile) return 1;
+        }
+        return 0;
+      });
     }
 
     return items;
-  }, [allGalleryItems, selectedCategory, selectedSubcategory, getSubcategoryInfo]);
+  }, [allGalleryItems, selectedCategory, selectedSubcategory, getSubcategoryInfo, isMobileScreen]);
 
   // Safe slide navigation functions
   const totalSlides = categorySliderItems.length;
