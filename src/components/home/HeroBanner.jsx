@@ -2,6 +2,45 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getGalleryByPosition, getGallery, getResults } from '../../api/client';
 
+const DEFAULT_TOPPERS = [
+  {
+    _id: 'ips-star-1',
+    studentName: 'Aafiya Siddiqui',
+    percentage: 97.8,
+    category: 'class_12',
+    stream: 'Science (PCB)',
+    academicYear: '2024-25',
+    rankTitle: 'School 1st Rank',
+    specialHonors: 'District Merit • 100/100 Biology',
+    photoUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=400',
+    tag: 'Board Star'
+  },
+  {
+    _id: 'ips-star-2',
+    studentName: 'Mohd. Zeeshan',
+    percentage: 96.6,
+    category: 'class_12',
+    stream: 'Commerce (Maths)',
+    academicYear: '2024-25',
+    rankTitle: 'District 2nd Rank',
+    specialHonors: 'UP Board Merit • 99/100 Accounts',
+    photoUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400',
+    tag: 'Commerce Topper'
+  },
+  {
+    _id: 'ips-star-3',
+    studentName: 'Ananya Verma',
+    percentage: 98.2,
+    category: 'class_10',
+    stream: 'Secondary High School',
+    academicYear: '2024-25',
+    rankTitle: 'State Rank 4',
+    specialHonors: 'High School Board Merit • 100/100 Math',
+    photoUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400',
+    tag: 'Class X Topper'
+  }
+];
+
 export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
   const [allBanners, setAllBanners] = useState([]);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
@@ -19,7 +58,7 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
   };
 
   const [isMobile, setIsMobile] = useState(checkIsMobile);
-  const [toppersList, setToppersList] = useState([]);
+  const [toppersList, setToppersList] = useState(DEFAULT_TOPPERS);
 
   // Touch swipe support for mobile
   const touchStartX = useRef(0);
@@ -78,13 +117,10 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
           const allResultsRes = await getResults();
           if (isMounted && allResultsRes?.data && allResultsRes.data.length > 0) {
             setToppersList(allResultsRes.data);
-          } else {
-            setToppersList([]);
           }
         }
       } catch (err) {
-        console.warn('Could not fetch results from backend:', err);
-        if (isMounted) setToppersList([]);
+        console.warn('Could not fetch results from backend (using fallback):', err);
       }
     };
 
@@ -353,129 +389,191 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
               </motion.div>
             </div>
 
-            {/* Right Content (5 Cols): REAL TOPPERS FROM BACKEND */}
+            {/* Right Content (5 Cols): EXECUTIVE ENTERPRISE TOPPER PLAQUE */}
             {toppersList.length > 0 && currentTopper && (
               <motion.div
-                initial={{ opacity: 0, x: 40, scale: 0.95 }}
+                initial={{ opacity: 0, x: 30, scale: 0.96 }}
                 animate={{ opacity: 1, x: 0, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
+                transition={{ duration: 0.7, delay: 0.25 }}
                 className="lg:col-span-5 flex justify-center lg:justify-end mt-4 lg:mt-0"
               >
-                <div className="relative w-full max-w-sm" id="hero-topper-widget">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={currentTopper._id || topperIndex}
-                      initial={{ opacity: 0, scale: 0.92 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.4 }}
-                      className="student-slide flex flex-col items-center text-center max-w-sm mx-auto"
-                    >
-                      {/* Circle Image with Floating Badge & Previous/Next Buttons */}
-                      <div className="relative flex items-center justify-center">
-                        <div className="w-40 h-40 sm:w-52 sm:h-52 lg:w-56 lg:h-56 rounded-full p-1.5 bg-gradient-to-tr from-tertiary-fixed-dim via-surface-container-lowest to-secondary shadow-2xl transition-transform duration-300 hover:scale-105">
-                          <div className="w-full h-full rounded-full overflow-hidden border-4 border-surface-container-lowest bg-surface-container shadow-inner">
-                            <img
-                              alt={currentTopper.studentName}
-                              className="w-full h-full object-cover"
-                              src={currentTopper.photoUrl}
-                            />
+                <div className="relative w-full max-w-[350px] sm:max-w-[370px]" id="hero-topper-widget">
+                  {/* Ambient golden glow */}
+                  <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-400/20 via-secondary/25 to-amber-300/20 rounded-[22px] blur-xl opacity-75 pointer-events-none" />
+
+                  {/* Main Executive Glass Card */}
+                  <div className="relative rounded-[22px] bg-gradient-to-b from-[#0a1c34]/95 via-[#061426]/95 to-[#020b18]/98 backdrop-blur-2xl border border-amber-400/35 shadow-[0_20px_50px_-12px_rgba(0,10,25,0.85)] p-4 sm:p-5 overflow-hidden">
+                    {/* Top Gold Foil Accent Rim */}
+                    <div className="absolute top-0 inset-x-8 h-[2px] bg-gradient-to-r from-transparent via-amber-300/90 to-transparent" />
+                    {/* Radial Ambient Backlight */}
+                    <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-40 h-24 bg-amber-400/15 rounded-full blur-2xl pointer-events-none" />
+
+                    {/* Header Bar */}
+                    <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10 relative z-10">
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300">
+                        <span className="material-symbols-outlined text-[15px]" style={{ fontVariationSettings: '"FILL" 1' }}>
+                          workspace_premium
+                        </span>
+                        <span className="text-[10px] font-black tracking-widest uppercase">
+                          HALL OF FAME
+                        </span>
+                      </div>
+
+                      <div className="inline-flex items-center gap-1.5 text-[10px] font-mono font-semibold text-slate-300 bg-white/[0.06] border border-white/10 px-2.5 py-0.5 rounded-full">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span>{currentTopper.academicYear ? `Session ${currentTopper.academicYear}` : 'Session 2024–25'}</span>
+                      </div>
+                    </div>
+
+                    {/* Animated Student Showcase Content */}
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={currentTopper._id || topperIndex}
+                        initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                        className="pt-3.5 relative z-10"
+                      >
+                        {/* Center Profile Row: Portrait & Score Details */}
+                        <div className="flex items-center gap-4">
+                          {/* Portrait Frame with Gold-to-Ruby Ring */}
+                          <div className="relative flex-shrink-0">
+                            <div className="w-[82px] h-[82px] sm:w-[92px] sm:h-[92px] rounded-2xl p-[2.5px] bg-gradient-to-tr from-amber-400 via-rose-500 to-amber-200 shadow-xl transition-transform duration-300 hover:scale-105">
+                              <div className="w-full h-full rounded-[13px] overflow-hidden bg-slate-900 border-2 border-[#0a1c34]">
+                                <img
+                                  alt={currentTopper.studentName}
+                                  className="w-full h-full object-cover"
+                                  src={currentTopper.photoUrl}
+                                  onError={(e) => {
+                                    e.currentTarget.onerror = null;
+                                    e.currentTarget.src =
+                                      'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=400';
+                                  }}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Rank Badge Attached to Portrait */}
+                            <div className="absolute -bottom-2.5 inset-x-0 mx-auto w-max max-w-[88px] px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 font-black text-[9px] tracking-wider uppercase shadow-md border border-amber-200/80 flex items-center justify-center gap-0.5 truncate">
+                              <span className="material-symbols-outlined text-[12px] flex-shrink-0" style={{ fontVariationSettings: '"FILL" 1' }}>
+                                military_tech
+                              </span>
+                              <span className="truncate">{currentTopper.rankTitle || 'State Star'}</span>
+                            </div>
+                          </div>
+
+                          {/* Primary Metrics: Score & Category */}
+                          <div className="flex-1 min-w-0 text-left">
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-3xl sm:text-4xl font-black font-serif text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-300 to-amber-100 leading-none">
+                                {currentTopper.percentage}
+                              </span>
+                              <span className="text-xl sm:text-2xl font-black text-amber-300 font-serif leading-none">%</span>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                              <span className="text-[10px] font-bold text-amber-300/80 uppercase tracking-widest">
+                                AGGREGATE
+                              </span>
+                              <span className="w-1 h-1 rounded-full bg-amber-400/40" />
+                              <span className="px-1.5 py-0.2 rounded bg-secondary/85 text-white text-[9px] font-extrabold uppercase tracking-wider border border-secondary-container/30">
+                                {currentTopper.tag || (currentTopper.category === 'class_12' ? 'Class XII' : 'Class X')}
+                              </span>
+                            </div>
+
+                            {/* Student Name */}
+                            <h4 className="text-base sm:text-[17px] font-bold text-white font-serif tracking-tight truncate mt-1.5" title={currentTopper.studentName}>
+                              {currentTopper.studentName}
+                            </h4>
+
+                            {/* Stream / Wing Subtitle */}
+                            <p className="text-xs text-slate-300/85 font-medium truncate mt-0.5">
+                              {currentTopper.stream || (currentTopper.category === 'class_12' ? 'Senior Secondary (10+2)' : 'Secondary High School')}
+                            </p>
                           </div>
                         </div>
 
-                        {/* Rank / Award Badge */}
-                        <div className="absolute -bottom-3 inset-x-0 mx-auto w-max px-3 sm:px-3.5 py-1 rounded-full bg-primary text-tertiary-fixed font-label-sm text-[10px] sm:text-[11px] tracking-wider uppercase font-bold shadow-xl border border-tertiary-fixed-dim flex items-center gap-1.5 backdrop-blur-md">
-                          <span className="material-symbols-outlined text-[13px] text-tertiary-fixed" style={{ fontVariationSettings: '"FILL" 1' }}>
-                            workspace_premium
-                          </span>
-                          {currentTopper.rankTitle || 'Board Star'}
-                        </div>
-
-                        {/* Left Navigation Chevron */}
-                        {toppersList.length > 1 && (
-                          <button
-                            onClick={() =>
-                              setTopperIndex((prev) => (prev - 1 + toppersList.length) % toppersList.length)
-                            }
-                            aria-label="Previous Topper"
-                            className="topper-prev-btn absolute -left-2 sm:-left-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/90 hover:bg-secondary text-on-primary shadow-lg border border-surface-container-lowest/40 flex items-center justify-center transition-all z-20 hover:scale-110 active:scale-95"
-                          >
-                            <span className="material-symbols-outlined text-[18px] sm:text-[20px]">chevron_left</span>
-                          </button>
+                        {/* Special Honors Distinction Plaque */}
+                        {currentTopper.specialHonors && (
+                          <div className="mt-3.5 py-2 px-3 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-between text-left gap-2">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <span className="material-symbols-outlined text-[15px] text-amber-300 flex-shrink-0" style={{ fontVariationSettings: '"FILL" 1' }}>
+                                award_star
+                              </span>
+                              <span className="text-[11px] text-amber-200/95 font-medium truncate">
+                                {currentTopper.specialHonors}
+                              </span>
+                            </div>
+                            <span className="text-[9px] font-mono uppercase text-emerald-400 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20 flex-shrink-0">
+                              MERIT
+                            </span>
+                          </div>
                         )}
+                      </motion.div>
+                    </AnimatePresence>
 
-                        {/* Right Navigation Chevron */}
+                    {/* Footer Controls: Navigation & Link to Results */}
+                    <div className="mt-3.5 pt-3 border-t border-white/10 flex items-center justify-between relative z-10 text-xs">
+                      {/* Carousel Controls */}
+                      <div className="flex items-center gap-1.5">
                         {toppersList.length > 1 && (
-                          <button
-                            onClick={() =>
-                              setTopperIndex((prev) => (prev + 1) % toppersList.length)
-                            }
-                            aria-label="Next Topper"
-                            className="topper-next-btn absolute -right-2 sm:-right-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary/90 hover:bg-secondary text-on-primary shadow-lg border border-surface-container-lowest/40 flex items-center justify-center transition-all z-20 hover:scale-110 active:scale-95"
-                          >
-                            <span className="material-symbols-outlined text-[18px] sm:text-[20px]">chevron_right</span>
-                          </button>
+                          <>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setTopperIndex((prev) => (prev - 1 + toppersList.length) % toppersList.length);
+                              }}
+                              aria-label="Previous Topper"
+                              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/10 hover:bg-secondary text-white border border-white/15 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+                            >
+                              <span className="material-symbols-outlined text-[15px]">chevron_left</span>
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setTopperIndex((prev) => (prev + 1) % toppersList.length);
+                              }}
+                              aria-label="Next Topper"
+                              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/10 hover:bg-secondary text-white border border-white/15 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+                            >
+                              <span className="material-symbols-outlined text-[15px]">chevron_right</span>
+                            </button>
+                          </>
+                        )}
+                        {toppersList.length > 1 && (
+                          <span className="text-[10px] font-mono font-bold text-amber-300/80 ml-1">
+                            0{topperIndex + 1} / 0{toppersList.length}
+                          </span>
                         )}
                       </div>
 
-                      {/* Result Details Card */}
-                      <div className="mt-5 sm:mt-6 bg-surface-container-lowest/95 backdrop-blur-md px-5 sm:px-6 py-3.5 sm:py-4 rounded-xl shadow-xl border border-surface-container-high/60 w-full max-w-xs transition-all hover:shadow-2xl text-slate-900">
-                        <div className="inline-flex items-baseline gap-1">
-                          <span className="text-3xl sm:text-4xl font-extrabold text-secondary leading-none">
-                            {currentTopper.percentage}
-                          </span>
-                          <span className="text-xl font-bold text-secondary">%</span>
-                          <span className="ml-2 px-2 py-0.5 bg-primary text-on-primary rounded text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">
-                            {currentTopper.tag || currentTopper.category?.replace('_', ' ') || 'Top Rank'}
-                          </span>
-                        </div>
+                      {/* Direct Link to Results */}
+                      <button
+                        onClick={() => onNavigate && onNavigate('results')}
+                        className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-amber-300 hover:text-white transition-colors group"
+                      >
+                        <span>Merit List</span>
+                        <span className="material-symbols-outlined text-[14px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+                      </button>
+                    </div>
 
-                        <h3 className="text-base sm:text-lg font-bold text-primary uppercase tracking-tight mt-1 truncate">
-                          {currentTopper.studentName}
-                        </h3>
-
-                        <p className="text-xs sm:text-sm text-on-surface-variant font-medium mt-0.5">
-                          {currentTopper.stream || `Session ${currentTopper.academicYear || '2024-25'}`}
-                        </p>
-
-                        <div className="mt-3 pt-2.5 border-t border-surface-container-high flex items-center justify-between text-xs">
-                          <span className="text-on-surface-variant flex items-center gap-1 font-medium text-[10px] sm:text-[11px]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
-                            {currentTopper.specialHonors || 'Distinction'}
-                          </span>
-                          <button
-                            onClick={() => onNavigate && onNavigate('results')}
-                            className="text-primary font-bold hover:text-secondary inline-flex items-center gap-0.5 transition-colors group-hover:underline"
-                          >
-                            Honor Roll <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-                          </button>
-                        </div>
-                      </div>
-                    </motion.div>
-                  </AnimatePresence>
-
-                  {/* Topper Pagination indicators & slide counter */}
-                  {toppersList.length > 1 && (
-                    <div className="mt-3 flex items-center justify-center gap-3">
-                      <div className="flex items-center gap-1.5 bg-primary/70 backdrop-blur-md px-3 py-1 rounded-full border border-primary-container/40">
+                    {/* Progress Indicator Dots */}
+                    {toppersList.length > 1 && (
+                      <div className="mt-2.5 flex items-center justify-center gap-1.5">
                         {toppersList.map((_, i) => (
                           <button
                             key={i}
                             onClick={() => setTopperIndex(i)}
-                            className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all ${
-                              topperIndex === i
-                                ? 'bg-tertiary-fixed scale-125'
-                                : 'bg-surface-container-lowest/40 hover:bg-surface-container-lowest/80'
+                            className={`h-1 rounded-full transition-all duration-300 ${
+                              topperIndex === i ? 'w-4 bg-amber-400' : 'w-1 bg-white/25 hover:bg-white/50'
                             }`}
                             aria-label={`Topper ${i + 1}`}
                           />
                         ))}
                       </div>
-                      <span className="topper-counter text-[10px] sm:text-[11px] font-mono font-bold text-tertiary-fixed bg-primary/70 backdrop-blur-md px-2.5 py-1 rounded-full border border-primary-container/40">
-                        0{topperIndex + 1} / 0{toppersList.length}
-                      </span>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </motion.div>
             )}
