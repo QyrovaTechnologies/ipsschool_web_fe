@@ -2,45 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getGalleryByPosition, getGallery, getResults } from '../../api/client';
 
-const DEFAULT_TOPPERS = [
-  {
-    _id: 'ips-star-1',
-    studentName: 'Aafiya Siddiqui',
-    percentage: 97.8,
-    category: 'class_12',
-    stream: 'Science (PCB)',
-    academicYear: '2024-25',
-    rankTitle: 'School 1st Rank',
-    specialHonors: 'District Merit • 100/100 Biology',
-    photoUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=400',
-    tag: 'Board Star'
-  },
-  {
-    _id: 'ips-star-2',
-    studentName: 'Mohd. Zeeshan',
-    percentage: 96.6,
-    category: 'class_12',
-    stream: 'Commerce (Maths)',
-    academicYear: '2024-25',
-    rankTitle: 'District 2nd Rank',
-    specialHonors: 'UP Board Merit • 99/100 Accounts',
-    photoUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400',
-    tag: 'Commerce Topper'
-  },
-  {
-    _id: 'ips-star-3',
-    studentName: 'Ananya Verma',
-    percentage: 98.2,
-    category: 'class_10',
-    stream: 'Secondary High School',
-    academicYear: '2024-25',
-    rankTitle: 'State Rank 4',
-    specialHonors: 'High School Board Merit • 100/100 Math',
-    photoUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400',
-    tag: 'Class X Topper'
-  }
-];
-
 export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
   const [allBanners, setAllBanners] = useState([]);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
@@ -58,7 +19,7 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
   };
 
   const [isMobile, setIsMobile] = useState(checkIsMobile);
-  const [toppersList, setToppersList] = useState(DEFAULT_TOPPERS);
+  const [toppersList, setToppersList] = useState([]);
 
   // Touch swipe support for mobile
   const touchStartX = useRef(0);
@@ -117,10 +78,13 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
           const allResultsRes = await getResults();
           if (isMounted && allResultsRes?.data && allResultsRes.data.length > 0) {
             setToppersList(allResultsRes.data);
+          } else if (isMounted) {
+            setToppersList([]);
           }
         }
       } catch (err) {
-        console.warn('Could not fetch results from backend (using fallback):', err);
+        console.warn('Could not fetch results from backend:', err);
+        if (isMounted) setToppersList([]);
       }
     };
 

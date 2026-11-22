@@ -2,113 +2,13 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { getResults } from '../api/client';
 import PageBanner from '../components/common/PageBanner';
 
-// Curated institutional toppers ensuring the Merit List is always authoritative and complete
-const FALLBACK_TOPPERS = [
-  {
-    _id: 'ips-topper-1',
-    studentName: 'Ananya Verma',
-    percentage: 98.2,
-    academicYear: '2024-25',
-    category: 'class_10',
-    stream: 'General',
-    rankTitle: 'State Rank 4',
-    specialHonors: 'High School Board Merit • 100/100 Mathematics & Science',
-    photoUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400',
-    featuredOnHome: true
-  },
-  {
-    _id: 'ips-topper-2',
-    studentName: 'Aafiya Siddiqui',
-    percentage: 97.8,
-    academicYear: '2024-25',
-    category: 'class_12',
-    stream: 'Science',
-    rankTitle: 'School 1st Rank',
-    specialHonors: 'District Merit • 100/100 Biology • Physics 98/100',
-    photoUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=400',
-    featuredOnHome: true
-  },
-  {
-    _id: 'ips-topper-3',
-    studentName: 'Mohd. Zeeshan',
-    percentage: 96.6,
-    academicYear: '2024-25',
-    category: 'class_12',
-    stream: 'Commerce',
-    rankTitle: 'District 2nd Rank',
-    specialHonors: 'UP Board Merit • 99/100 Accountancy & Business Studies',
-    photoUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400',
-    featuredOnHome: true
-  },
-  {
-    _id: 'ips-topper-4',
-    studentName: 'Aryan Patel',
-    percentage: 95.8,
-    academicYear: '2024-25',
-    category: 'class_12',
-    stream: 'Science',
-    rankTitle: 'School 2nd Rank',
-    specialHonors: 'State Olympiad Finalist • 99/100 Chemistry',
-    photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
-    featuredOnHome: false
-  },
-  {
-    _id: 'ips-topper-5',
-    studentName: 'Fatima Zahra',
-    percentage: 96.4,
-    academicYear: '2024-25',
-    category: 'class_10',
-    stream: 'General',
-    rankTitle: 'District 3rd Rank',
-    specialHonors: '100/100 Social Science • English Distinction 98/100',
-    photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
-    featuredOnHome: false
-  },
-  {
-    _id: 'ips-topper-6',
-    studentName: 'Rehan Khan',
-    percentage: 95.2,
-    academicYear: '2024-25',
-    category: 'class_12',
-    stream: 'Humanities',
-    rankTitle: 'Stream Topper',
-    specialHonors: '98/100 History & Political Science Distinction',
-    photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
-    featuredOnHome: false
-  },
-  {
-    _id: 'ips-topper-7',
-    studentName: 'Zainab Bano',
-    percentage: 94.6,
-    academicYear: '2024-25',
-    category: 'class_10',
-    stream: 'General',
-    rankTitle: 'School 3rd Rank',
-    specialHonors: '98/100 Hindi & Science Excellence',
-    photoUrl: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400',
-    featuredOnHome: false
-  },
-  {
-    _id: 'ips-topper-8',
-    studentName: 'Kabir Siddiqui',
-    percentage: 97.4,
-    academicYear: '2024-25',
-    category: 'foundation',
-    stream: 'General',
-    rankTitle: 'Olympiad Gold',
-    specialHonors: 'National Science Olympiad Rank 1 • Math Wiz',
-    photoUrl: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=400',
-    featuredOnHome: false
-  }
-];
-
 export default function ResultsPage() {
-  const [selectedYear, setSelectedYear] = useState('2024-25');
+  const [selectedYear, setSelectedYear] = useState('All');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedStream, setSelectedStream] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [results, setResults] = useState([]);
-  const [availableYears, setAvailableYears] = useState(['2024-25', '2023-24', 'All']);
+  const [availableYears, setAvailableYears] = useState(['All']);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -130,16 +30,16 @@ export default function ResultsPage() {
       }
 
       const data = await getResults(query);
-      const fetched = data?.data && data.data.length > 0 ? data.data : FALLBACK_TOPPERS;
+      const fetched = data?.data && data.data.length > 0 ? data.data : [];
       setResults(fetched);
 
       if (data?.availableYears && data.availableYears.length > 0) {
-        const uniqueYears = Array.from(new Set([...data.availableYears, '2024-25', 'All']));
+        const uniqueYears = Array.from(new Set([...data.availableYears, 'All']));
         setAvailableYears(uniqueYears);
       }
     } catch (err) {
-      console.warn('Using default results data:', err);
-      setResults(FALLBACK_TOPPERS);
+      console.warn('Could not fetch results from backend:', err);
+      setResults([]);
     } finally {
       setLoading(false);
     }
@@ -353,6 +253,14 @@ export default function ResultsPage() {
             <div className="inline-block w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin" />
             <p className="mt-3 text-xs font-semibold text-slate-500">
               Loading verified student achievements...
+            </p>
+          </div>
+        ) : results.length === 0 ? (
+          <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 p-8 shadow-sm">
+            <span className="material-symbols-outlined text-[48px] text-slate-300 mb-2">school</span>
+            <h3 className="font-serif font-bold text-lg text-primary">No Student Results Published Yet</h3>
+            <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+              Board results and merit lists will appear here once officially uploaded and published.
             </p>
           </div>
         ) : filteredResults.length === 0 ? (
