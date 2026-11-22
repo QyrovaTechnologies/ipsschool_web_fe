@@ -375,32 +375,32 @@ export default function ResultsPage() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
             {filteredResults.map((student) => (
               <div
                 key={student._id}
-                className="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 p-5 flex flex-col justify-between overflow-hidden group text-center relative"
+                className="bg-white rounded-xl sm:rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-lg transition-all duration-300 hover:-translate-y-1 p-2.5 sm:p-3.5 flex flex-col justify-between overflow-hidden group text-left relative"
               >
-                {/* Top Ambient Thin Accent */}
-                <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-80" />
+                {/* Top Subtle Amber Accent */}
+                <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
 
                 <div>
                   {/* Card Header: Category & Session Tags */}
-                  <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100 text-[10px]">
-                    <span className="font-bold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-0.5 rounded-full">
+                  <div className="flex items-center justify-between pb-1.5 sm:pb-2 border-b border-slate-100 text-[9px] sm:text-[10px]">
+                    <span className="font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full truncate max-w-[65%]">
                       {student.category === 'class_12'
                         ? 'Class XII'
                         : student.category === 'class_10'
                         ? 'Class X'
                         : 'Foundation'}
                     </span>
-                    <span className="font-mono text-slate-400 font-semibold">
+                    <span className="font-mono text-slate-400 font-semibold shrink-0">
                       {student.academicYear || '2024-25'}
                     </span>
                   </div>
 
-                  {/* Student Portrait in Refined Frame */}
-                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 mx-auto rounded-2xl overflow-hidden bg-slate-900 ring-2 ring-slate-100 shadow-md">
+                  {/* Student Portrait with Floating Score & Rank Badges */}
+                  <div className="relative w-full aspect-[4/3] rounded-lg sm:rounded-xl overflow-hidden bg-slate-900 shadow-inner mt-2">
                     <img
                       src={student.photoUrl}
                       alt={student.studentName}
@@ -410,80 +410,72 @@ export default function ResultsPage() {
                           'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=400';
                       }}
                     />
-                    {student.featuredOnHome && (
-                      <span
-                        className="absolute bottom-1 right-1 bg-amber-400 text-slate-950 p-1 rounded-full shadow-md flex items-center justify-center"
-                        title="Star Scholar"
-                      >
-                        <span className="material-symbols-outlined text-[13px]" style={{ fontVariationSettings: '"FILL" 1' }}>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent pointer-events-none" />
+
+                    {/* Integrated Score Pill (Floating bottom right on photo) */}
+                    <div className="absolute bottom-1.5 right-1.5 bg-secondary text-white px-2 py-0.5 rounded-md shadow flex items-baseline gap-0.5">
+                      <span className="font-serif font-black text-xs sm:text-sm leading-none">
+                        {student.percentage}
+                      </span>
+                      <span className="text-[9px] sm:text-[10px] font-sans font-bold leading-none">%</span>
+                    </div>
+
+                    {/* Integrated Rank Tag (Floating top left on photo) */}
+                    {student.rankTitle ? (
+                      <div className="absolute top-1.5 left-1.5 bg-amber-400 text-slate-950 font-black text-[8px] sm:text-[9px] tracking-wide uppercase px-1.5 py-0.5 rounded shadow flex items-center gap-0.5 truncate max-w-[80%]">
+                        <span className="material-symbols-outlined text-[11px] shrink-0" style={{ fontVariationSettings: '"FILL" 1' }}>
+                          workspace_premium
+                        </span>
+                        <span className="truncate">{student.rankTitle}</span>
+                      </div>
+                    ) : student.featuredOnHome && (
+                      <div className="absolute top-1.5 left-1.5 bg-amber-400 text-slate-950 p-0.5 rounded shadow flex items-center justify-center">
+                        <span className="material-symbols-outlined text-[11px]" style={{ fontVariationSettings: '"FILL" 1' }}>
                           star
                         </span>
-                      </span>
+                      </div>
                     )}
                   </div>
 
-                  {/* Score Typography */}
-                  <div className="mt-3 flex items-baseline justify-center gap-0.5">
-                    <span className="font-serif font-extrabold text-3xl sm:text-4xl text-primary leading-none">
-                      {student.percentage}
-                    </span>
-                    <span className="font-serif font-bold text-xl text-secondary leading-none">%</span>
-                  </div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mt-0.5">
-                    Aggregate Score
-                  </span>
-
-                  {/* Rank Ribbon */}
-                  {student.rankTitle && (
-                    <div className="mt-2 flex justify-center">
-                      <span className="inline-flex items-center gap-1 bg-amber-500/10 text-amber-800 border border-amber-300/40 text-[11px] font-bold px-3 py-0.5 rounded-full shadow-xs">
-                        <span className="material-symbols-outlined text-[13px] text-amber-600" style={{ fontVariationSettings: '"FILL" 1' }}>
-                          workspace_premium
-                        </span>
-                        <span>{student.rankTitle}</span>
-                      </span>
-                    </div>
-                  )}
-
                   {/* Student Name */}
                   <h3
-                    className="font-serif font-bold text-base sm:text-lg text-slate-900 tracking-tight mt-2.5 truncate"
+                    className="font-serif font-bold text-xs sm:text-sm md:text-[15px] text-slate-900 tracking-tight mt-2 truncate leading-snug"
                     title={student.studentName}
                   >
                     {student.studentName}
                   </h3>
 
-                  {/* Stream / Wing Description */}
-                  <p className="text-xs text-slate-500 font-medium truncate mt-0.5">
+                  {/* Stream / Class Subtitle */}
+                  <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium truncate mt-0.5">
                     {student.category === 'class_12'
-                      ? `${student.stream || 'Senior Secondary'} Stream`
+                      ? `${student.stream || 'Senior Sec'} Stream`
                       : student.category === 'class_10'
-                      ? 'Secondary Board Merit'
-                      : 'Junior Olympiad Wing'}
+                      ? 'High School Merit'
+                      : 'Junior Olympiad'}
                   </p>
 
                   {/* Special Honors Box */}
                   {student.specialHonors && (
-                    <div className="mt-3 p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-start gap-1.5 text-left">
-                      <span className="material-symbols-outlined text-[15px] text-secondary shrink-0 mt-0.5" style={{ fontVariationSettings: '"FILL" 1' }}>
-                        award_star
-                      </span>
-                      <p className="text-xs text-slate-700 font-medium leading-snug line-clamp-2">
-                        {student.specialHonors}
+                    <div className="mt-1.5 p-1.5 rounded-md sm:rounded-lg bg-amber-500/5 border border-amber-300/30">
+                      <p className="text-[9px] sm:text-[10px] text-amber-900 font-semibold line-clamp-1 leading-snug flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[12px] text-amber-600 shrink-0" style={{ fontVariationSettings: '"FILL" 1' }}>
+                          award_star
+                        </span>
+                        <span className="truncate">{student.specialHonors}</span>
                       </p>
                     </div>
                   )}
                 </div>
 
                 {/* Card Footer: Institutional Verification */}
-                <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-medium">
-                  <span className="flex items-center gap-1 text-slate-600 font-semibold">
-                    <span className="material-symbols-outlined text-[14px] text-emerald-600" style={{ fontVariationSettings: '"FILL" 1' }}>
+                <div className="mt-2 pt-1.5 border-t border-slate-100 flex items-center justify-between text-[9px] sm:text-[10px] text-slate-400 font-medium">
+                  <span className="flex items-center gap-0.5 text-emerald-700 font-semibold truncate">
+                    <span className="material-symbols-outlined text-[12px] text-emerald-600 shrink-0" style={{ fontVariationSettings: '"FILL" 1' }}>
                       verified
                     </span>
-                    UP Board Merit
+                    UP Board
                   </span>
-                  <span className="font-mono text-slate-400 text-[10px]">Roll Verified</span>
+                  <span className="font-mono text-slate-400 text-[9px] shrink-0">Roll Verified</span>
                 </div>
               </div>
             ))}
