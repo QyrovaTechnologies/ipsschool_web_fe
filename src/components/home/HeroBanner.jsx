@@ -389,143 +389,122 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
               </motion.div>
             </div>
 
-            {/* Right Content (5 Cols): EXECUTIVE ENTERPRISE TOPPER PLAQUE */}
+            {/* Right Content (5 Cols): PRESTIGIOUS ACADEMIC ACHIEVERS CARD */}
             {toppersList.length > 0 && currentTopper && (
               <motion.div
-                initial={{ opacity: 0, x: 30, scale: 0.96 }}
+                initial={{ opacity: 0, x: 24, scale: 0.98 }}
                 animate={{ opacity: 1, x: 0, scale: 1 }}
-                transition={{ duration: 0.7, delay: 0.25 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
                 className="lg:col-span-5 flex justify-center lg:justify-end mt-4 lg:mt-0"
               >
-                <div className="relative w-full max-w-[350px] sm:max-w-[370px]" id="hero-topper-widget">
-                  {/* Ambient golden glow */}
-                  <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-400/20 via-secondary/25 to-amber-300/20 rounded-[22px] blur-xl opacity-75 pointer-events-none" />
+                <div className="relative w-full max-w-[340px] sm:max-w-[360px]" id="hero-topper-widget">
+                  {/* Executive Clean Glass Card */}
+                  <div className="relative rounded-2xl bg-slate-900/85 backdrop-blur-xl border border-white/15 shadow-[0_16px_36px_rgba(0,12,30,0.55)] p-4 sm:p-5 overflow-hidden text-white">
+                    {/* Subtle warm gold accent line at the top rim */}
+                    <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-amber-400/80 to-transparent" />
 
-                  {/* Main Executive Glass Card */}
-                  <div className="relative rounded-[22px] bg-gradient-to-b from-[#0a1c34]/95 via-[#061426]/95 to-[#020b18]/98 backdrop-blur-2xl border border-amber-400/35 shadow-[0_20px_50px_-12px_rgba(0,10,25,0.85)] p-4 sm:p-5 overflow-hidden">
-                    {/* Top Gold Foil Accent Rim */}
-                    <div className="absolute top-0 inset-x-8 h-[2px] bg-gradient-to-r from-transparent via-amber-300/90 to-transparent" />
-                    {/* Radial Ambient Backlight */}
-                    <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-40 h-24 bg-amber-400/15 rounded-full blur-2xl pointer-events-none" />
-
-                    {/* Header Bar */}
-                    <div className="flex items-center justify-between gap-2 pb-3 border-b border-white/10 relative z-10">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300">
-                        <span className="material-symbols-outlined text-[15px]" style={{ fontVariationSettings: '"FILL" 1' }}>
-                          workspace_premium
+                    {/* Card Header: Institutional & Dignified */}
+                    <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                      <div className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[18px] text-amber-300" style={{ fontVariationSettings: '"FILL" 1' }}>
+                          school
                         </span>
-                        <span className="text-[10px] font-black tracking-widest uppercase">
-                          HALL OF FAME
+                        <span className="text-xs font-bold tracking-wider uppercase text-slate-100">
+                          Academic Achievers
                         </span>
                       </div>
 
-                      <div className="inline-flex items-center gap-1.5 text-[10px] font-mono font-semibold text-slate-300 bg-white/[0.06] border border-white/10 px-2.5 py-0.5 rounded-full">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        <span>{currentTopper.academicYear ? `Session ${currentTopper.academicYear}` : 'Session 2024–25'}</span>
-                      </div>
+                      <span className="text-[11px] font-medium text-slate-300 bg-white/10 border border-white/10 px-2.5 py-0.5 rounded-full">
+                        {currentTopper.academicYear ? `Session ${currentTopper.academicYear}` : 'Session 2024–25'}
+                      </span>
                     </div>
 
-                    {/* Animated Student Showcase Content */}
+                    {/* Student Info Showcase */}
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={currentTopper._id || topperIndex}
-                        initial={{ opacity: 0, y: 8, scale: 0.98 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -8, scale: 0.98 }}
-                        transition={{ duration: 0.3, ease: 'easeOut' }}
-                        className="pt-3.5 relative z-10"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.25, ease: 'easeOut' }}
+                        className="py-3.5 space-y-3"
                       >
-                        {/* Center Profile Row: Portrait & Score Details */}
-                        <div className="flex items-center gap-4">
-                          {/* Portrait Frame with Gold-to-Ruby Ring */}
+                        {/* Profile Row: Clean Photo + Score & Bio */}
+                        <div className="flex items-center gap-3.5">
+                          {/* Student Photo */}
                           <div className="relative flex-shrink-0">
-                            <div className="w-[82px] h-[82px] sm:w-[92px] sm:h-[92px] rounded-2xl p-[2.5px] bg-gradient-to-tr from-amber-400 via-rose-500 to-amber-200 shadow-xl transition-transform duration-300 hover:scale-105">
-                              <div className="w-full h-full rounded-[13px] overflow-hidden bg-slate-900 border-2 border-[#0a1c34]">
-                                <img
-                                  alt={currentTopper.studentName}
-                                  className="w-full h-full object-cover"
-                                  src={currentTopper.photoUrl}
-                                  onError={(e) => {
-                                    e.currentTarget.onerror = null;
-                                    e.currentTarget.src =
-                                      'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=400';
-                                  }}
-                                />
-                              </div>
-                            </div>
-
-                            {/* Rank Badge Attached to Portrait */}
-                            <div className="absolute -bottom-2.5 inset-x-0 mx-auto w-max max-w-[88px] px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 font-black text-[9px] tracking-wider uppercase shadow-md border border-amber-200/80 flex items-center justify-center gap-0.5 truncate">
-                              <span className="material-symbols-outlined text-[12px] flex-shrink-0" style={{ fontVariationSettings: '"FILL" 1' }}>
-                                military_tech
-                              </span>
-                              <span className="truncate">{currentTopper.rankTitle || 'State Star'}</span>
+                            <div className="w-[72px] h-[72px] sm:w-[80px] sm:h-[80px] rounded-xl overflow-hidden bg-slate-800 ring-2 ring-white/15 shadow-md">
+                              <img
+                                alt={currentTopper.studentName}
+                                className="w-full h-full object-cover"
+                                src={currentTopper.photoUrl}
+                                onError={(e) => {
+                                  e.currentTarget.onerror = null;
+                                  e.currentTarget.src =
+                                    'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=400';
+                                }}
+                              />
                             </div>
                           </div>
 
-                          {/* Primary Metrics: Score & Category */}
-                          <div className="flex-1 min-w-0 text-left">
+                          {/* Primary Score & Details */}
+                          <div className="flex-1 min-w-0">
+                            {/* Score Display */}
                             <div className="flex items-baseline gap-1">
-                              <span className="text-3xl sm:text-4xl font-black font-serif text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-300 to-amber-100 leading-none">
+                              <span className="text-3xl sm:text-[34px] font-bold font-serif text-amber-300 leading-none">
                                 {currentTopper.percentage}
                               </span>
-                              <span className="text-xl sm:text-2xl font-black text-amber-300 font-serif leading-none">%</span>
-                            </div>
-
-                            <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-                              <span className="text-[10px] font-bold text-amber-300/80 uppercase tracking-widest">
-                                AGGREGATE
-                              </span>
-                              <span className="w-1 h-1 rounded-full bg-amber-400/40" />
-                              <span className="px-1.5 py-0.2 rounded bg-secondary/85 text-white text-[9px] font-extrabold uppercase tracking-wider border border-secondary-container/30">
-                                {currentTopper.tag || (currentTopper.category === 'class_12' ? 'Class XII' : 'Class X')}
-                              </span>
+                              <span className="text-lg font-serif font-bold text-amber-300/80 leading-none">%</span>
+                              <span className="text-[11px] text-slate-300 ml-1.5 font-medium">Board Score</span>
                             </div>
 
                             {/* Student Name */}
-                            <h4 className="text-base sm:text-[17px] font-bold text-white font-serif tracking-tight truncate mt-1.5" title={currentTopper.studentName}>
+                            <h4 className="text-base font-bold text-white tracking-tight truncate mt-1" title={currentTopper.studentName}>
                               {currentTopper.studentName}
                             </h4>
 
-                            {/* Stream / Wing Subtitle */}
-                            <p className="text-xs text-slate-300/85 font-medium truncate mt-0.5">
-                              {currentTopper.stream || (currentTopper.category === 'class_12' ? 'Senior Secondary (10+2)' : 'Secondary High School')}
-                            </p>
+                            {/* Class & Stream / Rank Pill */}
+                            <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                              <span className="text-[11px] text-slate-300 truncate">
+                                {currentTopper.category === 'class_12' ? 'Class XII' : 'Class X'}
+                                {currentTopper.stream ? ` • ${currentTopper.stream}` : ''}
+                              </span>
+                              {currentTopper.rankTitle && (
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-400/15 text-amber-300 border border-amber-400/30">
+                                  {currentTopper.rankTitle}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
 
-                        {/* Special Honors Distinction Plaque */}
+                        {/* Special Honors (if present) - clean, minimal note */}
                         {currentTopper.specialHonors && (
-                          <div className="mt-3.5 py-2 px-3 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-between text-left gap-2">
-                            <div className="flex items-center gap-1.5 min-w-0">
-                              <span className="material-symbols-outlined text-[15px] text-amber-300 flex-shrink-0" style={{ fontVariationSettings: '"FILL" 1' }}>
-                                award_star
-                              </span>
-                              <span className="text-[11px] text-amber-200/95 font-medium truncate">
-                                {currentTopper.specialHonors}
-                              </span>
-                            </div>
-                            <span className="text-[9px] font-mono uppercase text-emerald-400 font-bold bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20 flex-shrink-0">
-                              MERIT
+                          <div className="py-1.5 px-3 rounded-lg bg-white/[0.05] border border-white/10 flex items-center gap-2 text-xs">
+                            <span className="material-symbols-outlined text-[15px] text-amber-300 shrink-0" style={{ fontVariationSettings: '"FILL" 1' }}>
+                              military_tech
+                            </span>
+                            <span className="text-[11px] text-slate-200 truncate font-medium">
+                              {currentTopper.specialHonors}
                             </span>
                           </div>
                         )}
                       </motion.div>
                     </AnimatePresence>
 
-                    {/* Footer Controls: Navigation & Link to Results */}
-                    <div className="mt-3.5 pt-3 border-t border-white/10 flex items-center justify-between relative z-10 text-xs">
+                    {/* Footer Controls: Unified Navigation & Merit List Link */}
+                    <div className="pt-2.5 border-t border-white/10 flex items-center justify-between">
                       {/* Carousel Controls */}
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-2">
                         {toppersList.length > 1 && (
-                          <>
+                          <div className="flex items-center gap-1">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setTopperIndex((prev) => (prev - 1 + toppersList.length) % toppersList.length);
                               }}
                               aria-label="Previous Topper"
-                              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/10 hover:bg-secondary text-white border border-white/15 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+                              className="w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all active:scale-95"
                             >
                               <span className="material-symbols-outlined text-[15px]">chevron_left</span>
                             </button>
@@ -535,44 +514,37 @@ export default function HeroBanner({ onNavigate, onOpenEnquiry }) {
                                 setTopperIndex((prev) => (prev + 1) % toppersList.length);
                               }}
                               aria-label="Next Topper"
-                              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/10 hover:bg-secondary text-white border border-white/15 flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+                              className="w-6 h-6 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all active:scale-95"
                             >
                               <span className="material-symbols-outlined text-[15px]">chevron_right</span>
                             </button>
-                          </>
+                          </div>
                         )}
                         {toppersList.length > 1 && (
-                          <span className="text-[10px] font-mono font-bold text-amber-300/80 ml-1">
-                            0{topperIndex + 1} / 0{toppersList.length}
-                          </span>
+                          <div className="flex items-center gap-1">
+                            {toppersList.map((_, i) => (
+                              <button
+                                key={i}
+                                onClick={() => setTopperIndex(i)}
+                                className={`h-1.5 rounded-full transition-all duration-300 ${
+                                  topperIndex === i ? 'w-3.5 bg-amber-400' : 'w-1.5 bg-white/30 hover:bg-white/50'
+                                }`}
+                                aria-label={`Topper ${i + 1}`}
+                              />
+                            ))}
+                          </div>
                         )}
                       </div>
 
                       {/* Direct Link to Results */}
                       <button
                         onClick={() => onNavigate && onNavigate('results')}
-                        className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-amber-300 hover:text-white transition-colors group"
+                        className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-300 hover:text-white transition-colors"
                       >
-                        <span>Merit List</span>
-                        <span className="material-symbols-outlined text-[14px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+                        <span>View Merit List</span>
+                        <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
                       </button>
                     </div>
-
-                    {/* Progress Indicator Dots */}
-                    {toppersList.length > 1 && (
-                      <div className="mt-2.5 flex items-center justify-center gap-1.5">
-                        {toppersList.map((_, i) => (
-                          <button
-                            key={i}
-                            onClick={() => setTopperIndex(i)}
-                            className={`h-1 rounded-full transition-all duration-300 ${
-                              topperIndex === i ? 'w-4 bg-amber-400' : 'w-1 bg-white/25 hover:bg-white/50'
-                            }`}
-                            aria-label={`Topper ${i + 1}`}
-                          />
-                        ))}
-                      </div>
-                    )}
                   </div>
                 </div>
               </motion.div>
