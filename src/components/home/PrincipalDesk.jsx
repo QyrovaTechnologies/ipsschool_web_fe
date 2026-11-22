@@ -194,14 +194,11 @@ export default function PrincipalDesk({ onNavigate }) {
 
             {/* Pagination Controls */}
             <div className="flex items-center gap-2 self-start sm:self-auto">
-              <span className="text-xs font-mono text-on-surface-variant font-semibold mr-1">
-                Slide {currentSlide + 1} of {totalSlides}
-              </span>
               <button
                 onClick={() => paginate(-1)}
                 className="w-9 h-9 rounded-lg bg-white hover:bg-primary hover:text-white text-primary flex items-center justify-center transition-all shadow-sm border border-outline-variant/60 active:scale-95"
                 title="Previous"
-                aria-label="Previous slide"
+                aria-label="Previous profile"
               >
                 <span className="material-symbols-outlined text-[20px]">arrow_back</span>
               </button>
@@ -209,7 +206,7 @@ export default function PrincipalDesk({ onNavigate }) {
                 onClick={() => paginate(1)}
                 className="w-9 h-9 rounded-lg bg-white hover:bg-primary hover:text-white text-primary flex items-center justify-center transition-all shadow-sm border border-outline-variant/60 active:scale-95"
                 title="Next"
-                aria-label="Next slide"
+                aria-label="Next profile"
               >
                 <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
               </button>
@@ -248,8 +245,8 @@ export default function PrincipalDesk({ onNavigate }) {
 
                   {/* Main Content Area */}
                   <div className="p-4 sm:p-5 relative z-10 flex-1 flex flex-col justify-between">
-                    {/* Top Role & Department Pill Bar */}
-                    <div className="flex items-center justify-between gap-2 pb-2.5 mb-3 border-b border-white/10">
+                    {/* Top Role Pill Bar (Only Role Shown) */}
+                    <div className="flex items-center pb-2.5 mb-3 border-b border-white/10">
                       <span
                         className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider border shadow-sm ${getRoleBadgeStyle(
                           staff.role
@@ -257,11 +254,6 @@ export default function PrincipalDesk({ onNavigate }) {
                       >
                         <span className="material-symbols-outlined text-[13px]">workspace_premium</span>
                         <span>{staff.role}</span>
-                      </span>
-
-                      <span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] text-slate-300 font-medium bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        {staff.department || 'Administration'}
                       </span>
                     </div>
 
