@@ -163,12 +163,14 @@ export default function AcademicsPage({ onNavigate }) {
               Enroll your child for academic excellence, holistic character, and UP Board mastery.
             </p>
           </div>
-          <button
-            onClick={() => onNavigate && onNavigate('home')}
+          <a
+            href="https://forms.gle/KVPj3ZM7vtcNwSmS6"
+            target="_blank"
+            rel="noopener noreferrer"
             className="px-6 py-3 bg-secondary text-white rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-on-secondary-container transition-all shadow shrink-0"
           >
             Apply for Admission
-          </button>
+          </a>
         </div>
       </div>
     </div>

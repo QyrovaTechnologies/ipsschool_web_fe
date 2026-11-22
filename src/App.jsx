@@ -68,8 +68,7 @@ export default function App() {
           <HomePage
             onNavigate={handleNavigate}
             onOpenEnquiry={() => {
-              const cta = document.getElementById('admission-cta');
-              if (cta) cta.scrollIntoView({ behavior: 'smooth' });
+              window.open('https://forms.gle/KVPj3ZM7vtcNwSmS6', '_blank', 'noopener,noreferrer');
             }}
           />
         )}

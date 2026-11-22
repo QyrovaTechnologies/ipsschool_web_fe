@@ -82,15 +82,9 @@ export default function Navbar({ currentPage, activePage, onNavigate, setActiveP
           {/* Right: Admission Action Button */}
           <div className="flex items-center gap-2">
             <a
-              href="/#admission-cta"
-              onClick={(e) => {
-                e.preventDefault();
-                navigate('home', '/');
-                setTimeout(() => {
-                  const el = document.getElementById('admission-cta');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
-              }}
+              href="https://forms.gle/KVPj3ZM7vtcNwSmS6"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-secondary text-white hover:bg-on-secondary-container px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-lg text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-all shadow hover:shadow-md hover:scale-105 whitespace-nowrap"
             >
               Enquiry 2026-27
@@ -181,19 +175,16 @@ export default function Navbar({ currentPage, activePage, onNavigate, setActiveP
 
               {/* Drawer Footer Actions */}
               <div className="p-4 border-t border-white/10 bg-black/30 space-y-3">
-                <button
-                  onClick={(e) => {
-                    handleNavClick(e, { id: 'home', path: '/' });
-                    setTimeout(() => {
-                      const el = document.getElementById('admission-cta');
-                      if (el) el.scrollIntoView({ behavior: 'smooth' });
-                    }, 100);
-                  }}
+                <a
+                  href="https://forms.gle/KVPj3ZM7vtcNwSmS6"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsMobileMenuOpen(false)}
                   className="w-full py-2.5 bg-secondary text-white rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-on-secondary-container transition-all flex items-center justify-center gap-1.5 shadow"
                 >
                   <span className="material-symbols-outlined text-[16px]">campaign</span>
                   <span>Enquiry 2026-27</span>
-                </button>
+                </a>
 
                 <div className="space-y-2 text-[11px] text-slate-300">
                   <div className="space-y-1">

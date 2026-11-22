@@ -3,7 +3,7 @@ import ScrollReveal from '../common/ScrollReveal';
 
 export default function AdmissionCta({ onOpenEnquiry }) {
   return (
-    <section className="w-full bg-gradient-to-r from-primary via-primary-container to-primary text-on-primary py-space-xl relative overflow-hidden">
+    <section id="admission-cta" className="w-full bg-gradient-to-r from-primary via-primary-container to-primary text-on-primary py-space-xl relative overflow-hidden">
       {/* Decorative heraldic backdrop */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-10 mix-blend-overlay pointer-events-none"
@@ -27,13 +27,15 @@ export default function AdmissionCta({ onOpenEnquiry }) {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-space-md w-full lg:w-auto flex-shrink-0">
-              <button
-                onClick={() => onOpenEnquiry && onOpenEnquiry()}
+              <a
+                href="https://forms.gle/KVPj3ZM7vtcNwSmS6"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-secondary text-on-secondary px-7 py-4 rounded-lg font-label-lg text-label-lg font-bold hover:bg-on-secondary-container transition-all shadow-xl hover:scale-105"
               >
                 <span>Apply Online Now</span>
                 <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
-              </button>
+              </a>
               <a
                 href="#admissions"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-surface-container-lowest text-primary px-6 py-4 rounded-lg font-label-lg text-label-lg font-bold hover:bg-primary-fixed transition-colors shadow-md"
