@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import Header from './components/common/Header';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
@@ -56,6 +57,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-surface font-body-md text-on-surface antialiased flex flex-col justify-between selection:bg-secondary selection:text-on-secondary">
+      <Analytics />
       {/* Header and Navigation Bar */}
       <header className="fixed top-0 left-0 w-full z-50 shadow-[0_4px_20px_rgba(0,21,43,0.08)]">
         <Header />
